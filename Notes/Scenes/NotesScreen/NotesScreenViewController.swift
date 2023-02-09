@@ -14,7 +14,7 @@ class NotesScreenViewController: UIViewController {
     private let addNoteButton = UIButton(type: .system)
     
     lazy private var notesCollection: UICollectionView = {
-        let layout = UICollectionViewLayout()
+        let layout = NoteLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
@@ -39,6 +39,7 @@ class NotesScreenViewController: UIViewController {
     private func setup() {
         setupSuperView()
         setupHeaderLabel()
+        setupNotesCollection()
         setupAddNoteButton()
     }
     
@@ -55,9 +56,26 @@ class NotesScreenViewController: UIViewController {
         headerLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
         
         headerLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
+            make.top.equalToSuperview().offset(60)
             make.leading.equalToSuperview().offset(60)
         }
+    }
+    
+    private func setupNotesCollection() {
+        view.addSubview(notesCollection)
+        
+        notesCollection.backgroundColor = .clear
+        notesCollection.clipsToBounds = true
+        notesCollection.showsVerticalScrollIndicator = false
+        notesCollection.dataSource = self
+        notesCollection.delegate = self
+        notesCollection.register(NoteViewCell.self, forCellWithReuseIdentifier: NoteViewCell.identifier)
+        
+        notesCollection.snp.makeConstraints { make in
+            make.top.equalTo(headerLabel.snp.bottom).offset(20)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
     }
     
     private func setupAddNoteButton() {
@@ -74,4 +92,23 @@ class NotesScreenViewController: UIViewController {
             make.trailing.bottom.equalToSuperview().inset(40)
         }
     }
+}
+
+extension NotesScreenViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel.cellViewModels.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NoteViewCell.identifier, for: indexPath) as? NoteViewCell else {
+            return NoteViewCell()
+        }
+        
+        cell.configure(with: viewModel.cellViewModels[indexPath.item])
+        return cell
+    }
+}
+
+extension NotesScreenViewController: UICollectionViewDelegate {
+    
 }
