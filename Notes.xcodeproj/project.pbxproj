@@ -12,7 +12,6 @@
 		4920CA332995315E004DDA5F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4920CA322995315E004DDA5F /* Assets.xcassets */; };
 		4920CA362995315E004DDA5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4920CA342995315E004DDA5F /* LaunchScreen.storyboard */; };
 		49AA7DE12995327D007CD80F /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DE02995327D007CD80F /* Note.swift */; };
-		49AA7DE429953355007CD80F /* NotesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DE329953355007CD80F /* NotesData.swift */; };
 		49AA7DE7299538E3007CD80F /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DE6299538E3007CD80F /* UIColor.swift */; };
 		49AA7DEB29953A1D007CD80F /* NotesScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DEA29953A1D007CD80F /* NotesScreenViewController.swift */; };
 		49AA7DED29953AF2007CD80F /* NotesScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DEC29953AF2007CD80F /* NotesScreenViewModel.swift */; };
@@ -22,6 +21,7 @@
 		49AA7DF829954390007CD80F /* NoteLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DF729954390007CD80F /* NoteLayout.swift */; };
 		49E9AEAD2996023800EC28F3 /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E9AEAC2996023800EC28F3 /* CreateNoteViewController.swift */; };
 		49E9AEAF2996025200EC28F3 /* CreateNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E9AEAE2996025200EC28F3 /* CreateNoteViewModel.swift */; };
+		49E9AEF82996BBB600EC28F3 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E9AEF72996BBB600EC28F3 /* Date.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,7 +32,6 @@
 		4920CA352995315E004DDA5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4920CA372995315E004DDA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49AA7DE02995327D007CD80F /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
-		49AA7DE329953355007CD80F /* NotesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesData.swift; sourceTree = "<group>"; };
 		49AA7DE6299538E3007CD80F /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		49AA7DEA29953A1D007CD80F /* NotesScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesScreenViewController.swift; sourceTree = "<group>"; };
 		49AA7DEC29953AF2007CD80F /* NotesScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesScreenViewModel.swift; sourceTree = "<group>"; };
@@ -41,6 +40,7 @@
 		49AA7DF729954390007CD80F /* NoteLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLayout.swift; sourceTree = "<group>"; };
 		49E9AEAC2996023800EC28F3 /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
 		49E9AEAE2996025200EC28F3 /* CreateNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewModel.swift; sourceTree = "<group>"; };
+		49E9AEF72996BBB600EC28F3 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,10 +78,8 @@
 				49AA7DF129953CBD007CD80F /* Application */,
 				49AA7DE8299539CE007CD80F /* Scenes */,
 				49AA7DE5299538C3007CD80F /* Extensions */,
-				49AA7DE229953338007CD80F /* AppData */,
 				49AA7DDF29953273007CD80F /* Models */,
 				4920CA322995315E004DDA5F /* Assets.xcassets */,
-				4920CA342995315E004DDA5F /* LaunchScreen.storyboard */,
 				4920CA372995315E004DDA5F /* Info.plist */,
 			);
 			path = Notes;
@@ -95,18 +93,11 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		49AA7DE229953338007CD80F /* AppData */ = {
-			isa = PBXGroup;
-			children = (
-				49AA7DE329953355007CD80F /* NotesData.swift */,
-			);
-			path = AppData;
-			sourceTree = "<group>";
-		};
 		49AA7DE5299538C3007CD80F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				49AA7DE6299538E3007CD80F /* UIColor.swift */,
+				49E9AEF72996BBB600EC28F3 /* Date.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -114,6 +105,7 @@
 		49AA7DE8299539CE007CD80F /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				4920CA342995315E004DDA5F /* LaunchScreen.storyboard */,
 				49E9AEAB299601E300EC28F3 /* CreateNote */,
 				49AA7DE9299539E4007CD80F /* NotesScreen */,
 			);
@@ -243,7 +235,7 @@
 				49AA7DF429954301007CD80F /* NoteViewCell.swift in Sources */,
 				49E9AEAD2996023800EC28F3 /* CreateNoteViewController.swift in Sources */,
 				49AA7DE12995327D007CD80F /* Note.swift in Sources */,
-				49AA7DE429953355007CD80F /* NotesData.swift in Sources */,
+				49E9AEF82996BBB600EC28F3 /* Date.swift in Sources */,
 				49AA7DED29953AF2007CD80F /* NotesScreenViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
