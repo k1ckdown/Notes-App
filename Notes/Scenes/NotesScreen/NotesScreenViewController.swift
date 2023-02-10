@@ -34,6 +34,17 @@ class NotesScreenViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
+        bindToViewModel()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupBackBarButtonItem()
+    }
+    
+    @objc
+    private func handleAddNoteButton() {
+        viewModel.goToCreateNote()
     }
     
     private func setup() {
@@ -86,10 +97,25 @@ class NotesScreenViewController: UIViewController {
         addNoteButton.tintColor = .white
         addNoteButton.backgroundColor = .appColor
         addNoteButton.layer.cornerRadius = 65 / 2
+        addNoteButton.addTarget(self, action: #selector(handleAddNoteButton), for: .touchUpInside)
         
         addNoteButton.snp.makeConstraints { make in
             make.height.width.equalTo(65)
             make.trailing.bottom.equalToSuperview().inset(40)
+        }
+    }
+    
+    private func setupBackBarButtonItem() {
+        let backBarButtonItem = UIBarButtonItem(title: "Notes", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = .appColor
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+    }
+}
+
+private extension NotesScreenViewController {
+    private func bindToViewModel() {
+        viewModel.didGoToNextScreen = { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
@@ -110,5 +136,8 @@ extension NotesScreenViewController: UICollectionViewDataSource {
 }
 
 extension NotesScreenViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.goToEditNote(at: indexPath.item)
+    }
 }
+

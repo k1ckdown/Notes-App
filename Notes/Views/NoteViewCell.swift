@@ -66,13 +66,14 @@ final class NoteViewCell: UICollectionViewCell {
 
         textNoteLabel.textColor = .previewText
         textNoteLabel.textAlignment = .left
-        textNoteLabel.font = UIFont.systemFont(ofSize: 20)
+        textNoteLabel.font = UIFont.systemFont(ofSize: 18)
         textNoteLabel.sizeToFit()
         textNoteLabel.numberOfLines = 0
 
         textNoteLabel.snp.makeConstraints { make in
             make.top.equalTo(titleNoteLabel.snp.bottom).offset(3)
             make.trailing.leading.equalTo(titleNoteLabel)
+            make.height.equalToSuperview().multipliedBy(0.63)
         }
     }
     
@@ -104,7 +105,7 @@ final class NoteViewCell: UICollectionViewCell {
     
     private func setupSeparatorView() {
         addSubview(separatorView)
-        separatorView.backgroundColor = .lightGray
+        separatorView.backgroundColor = .appColor
         
         separatorView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(titleNoteLabel)

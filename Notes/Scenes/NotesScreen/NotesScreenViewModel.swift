@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 final class NotesScreenViewModel {
+    
+    var didGoToNextScreen: ((UIViewController) -> Void)?
     
     private(set) var textForHeaderLabel = "Notes"
     
@@ -58,4 +61,15 @@ final class NotesScreenViewModel {
         cellViewModels = notes.map { NoteViewCellViewModel(titleNote: $0.title, textNote: $0.text, dateCreated: $0.dateCreated, dateModified: $0.dateModified) }
     }
     
+    func goToCreateNote() {
+        let viewModel = CreateNoteViewModel(note: nil)
+        let viewController = CreateNoteViewController(with: viewModel)
+        didGoToNextScreen?(viewController)
+    }
+    
+    func goToEditNote(at index: Int) {
+        let viewModel = CreateNoteViewModel(note: notes[index])
+        let viewController = CreateNoteViewController(with: viewModel)
+        didGoToNextScreen?(viewController)
+    }
 }

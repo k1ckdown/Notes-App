@@ -20,6 +20,8 @@
 		49AA7DF429954301007CD80F /* NoteViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DF329954301007CD80F /* NoteViewCell.swift */; };
 		49AA7DF62995435C007CD80F /* NoteViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DF52995435C007CD80F /* NoteViewCellViewModel.swift */; };
 		49AA7DF829954390007CD80F /* NoteLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DF729954390007CD80F /* NoteLayout.swift */; };
+		49E9AEAD2996023800EC28F3 /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E9AEAC2996023800EC28F3 /* CreateNoteViewController.swift */; };
+		49E9AEAF2996025200EC28F3 /* CreateNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E9AEAE2996025200EC28F3 /* CreateNoteViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		49AA7DF329954301007CD80F /* NoteViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewCell.swift; sourceTree = "<group>"; };
 		49AA7DF52995435C007CD80F /* NoteViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewCellViewModel.swift; sourceTree = "<group>"; };
 		49AA7DF729954390007CD80F /* NoteLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLayout.swift; sourceTree = "<group>"; };
+		49E9AEAC2996023800EC28F3 /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
+		49E9AEAE2996025200EC28F3 /* CreateNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,7 @@
 		49AA7DE8299539CE007CD80F /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				49E9AEAB299601E300EC28F3 /* CreateNote */,
 				49AA7DE9299539E4007CD80F /* NotesScreen */,
 			);
 			path = Scenes;
@@ -141,6 +146,15 @@
 				49AA7DF729954390007CD80F /* NoteLayout.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		49E9AEAB299601E300EC28F3 /* CreateNote */ = {
+			isa = PBXGroup;
+			children = (
+				49E9AEAC2996023800EC28F3 /* CreateNoteViewController.swift */,
+				49E9AEAE2996025200EC28F3 /* CreateNoteViewModel.swift */,
+			);
+			path = CreateNote;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -225,7 +239,9 @@
 				49AA7DEB29953A1D007CD80F /* NotesScreenViewController.swift in Sources */,
 				4920CA2C2995315D004DDA5F /* SceneDelegate.swift in Sources */,
 				49AA7DF829954390007CD80F /* NoteLayout.swift in Sources */,
+				49E9AEAF2996025200EC28F3 /* CreateNoteViewModel.swift in Sources */,
 				49AA7DF429954301007CD80F /* NoteViewCell.swift in Sources */,
+				49E9AEAD2996023800EC28F3 /* CreateNoteViewController.swift in Sources */,
 				49AA7DE12995327D007CD80F /* Note.swift in Sources */,
 				49AA7DE429953355007CD80F /* NotesData.swift in Sources */,
 				49AA7DED29953AF2007CD80F /* NotesScreenViewModel.swift in Sources */,
@@ -370,6 +386,7 @@
 				DEVELOPMENT_TEAM = 9KT4MKX52L;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -398,6 +415,7 @@
 				DEVELOPMENT_TEAM = 9KT4MKX52L;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
