@@ -9,10 +9,14 @@ import UIKit
 
 class CreateNoteViewController: UIViewController {
     
+    // MARK: - Private properties
+    
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
     
     private let viewModel: CreateNoteViewModel
+    
+    // MARK: - Inits
     
     init(with viewModel: CreateNoteViewModel) {
         self.viewModel = viewModel
@@ -23,6 +27,8 @@ class CreateNoteViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,14 +36,27 @@ class CreateNoteViewController: UIViewController {
         bindToViewModel()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.shouldShowKeyboard()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if self.isMovingFromParent {
+            viewModel.shouldSaveNote(with : titleNoteTextField.text, and: textNoteTextView.text)
+        }
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
-        endEditingOfNote()
     }
+    
+    // MARK: - Actions
     
     @objc
     private func handleDoneButton() {
-        endEditingOfNote()
         view.endEditing(true)
     }
     
@@ -57,6 +76,8 @@ class CreateNoteViewController: UIViewController {
         textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
     }
     
+    // MARK: - Private methods
+    
     private func showDoneButton() {
         self.navigationItem.rightBarButtonItem?.isEnabled = true
         self.navigationItem.rightBarButtonItem?.tintColor = .appColor
@@ -67,19 +88,23 @@ class CreateNoteViewController: UIViewController {
         self.navigationItem.rightBarButtonItem?.tintColor = .clear
     }
     
-    private func endEditingOfNote() {
-        viewModel.createNote(title: titleNoteTextField.text, text: textNoteTextView.text)
-    }
+    //  MARK: - Setup
     
     private func setup() {
         setupSuperView()
+        setupDoneButton()
         setupTitleNoteTextField()
         setupTextNoteTextView()
-        setupDoneButton()
     }
     
     private func setupSuperView() {
         view.backgroundColor = .backgroundApp
+    }
+    
+    private func setupDoneButton() {
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneButton))
+        self.navigationItem.rightBarButtonItem = doneButton
+        hideDoneButton()
     }
     
     private func setupTitleNoteTextField() {
@@ -128,21 +153,17 @@ class CreateNoteViewController: UIViewController {
             make.bottom.equalToSuperview()
         }        
     }
-    
-    private func setupDoneButton() {
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneButton))
-        self.navigationItem.rightBarButtonItem = doneButton
-        hideDoneButton()
-    }
 }
+
+// MARK: - UITextFieldDelegate
 
 extension CreateNoteViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        viewModel.beginEditingOfNote()
+        showDoneButton()
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        endEditingOfNote()
+        hideDoneButton()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -151,32 +172,36 @@ extension CreateNoteViewController: UITextFieldDelegate {
     }
 }
 
+// MARK: - UITextViewDelegate
+
 extension CreateNoteViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor != .white {
-            textView.text = ""
-            textView.textColor = .white
-        }
-        viewModel.beginEditingOfNote()
+        viewModel.beginEditingOfNote(content: textView.text)
+        showDoneButton()
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "Your new note..."
-            textView.textColor = .lightGray
-        }
-        endEditingOfNote()
+        viewModel.endEditingOfNote(content: textView.text)
+        hideDoneButton()
     }
 }
+
+// MARK: - Building ViewModel
 
 private extension CreateNoteViewController {
     private func bindToViewModel() {
         viewModel.didBeginEditingNote = { [weak self] in
-            self?.showDoneButton()
+            self?.textNoteTextView.text = ""
+            self?.textNoteTextView.textColor = .white
         }
         
-        viewModel.didEndEditingNote = { [weak self] in
-            self?.hideDoneButton()
+        viewModel.didEndEditingNote = { [weak self] placeholder in
+            self?.textNoteTextView.text = placeholder
+            self?.textNoteTextView.textColor = .lightGray
+        }
+        
+        viewModel.didShowKeyboard = { [weak self] in
+            self?.titleNoteTextField.becomeFirstResponder()
         }
     }
 }

@@ -9,29 +9,38 @@ import Foundation
 import UIKit
 
 protocol NotesScreenDelegate: AnyObject {
-    func refreshNote(at id: UUID?)
+    func refreshNote(with id: ObjectIdentifier)
+    func deleteNote(with id: ObjectIdentifier)
 }
 
 final class NotesScreenViewModel {
     
+    // MARK: - Public properties
+    
     var didGoToNextScreen: ((UIViewController) -> Void)?
     var didUpdateCollection: (() -> Void)?
     
-    private(set) var textForHeaderLabel = "Notes"
-    
     var cellViewModels: [NoteViewCellViewModel] = []
+    
+    // MARK: - Private properties
+    
     private var notes: [Note] = [] {
         didSet {
-            cellViewModels = notes.map { NoteViewCellViewModel(titleNote: $0.title, textNote: $0.content, dateCreated: $0.dateCreated, dateModified: $0.dateModified) }
+            cellViewModels = notes.map { NoteViewCellViewModel(titleNote: $0.title,
+                                                               textNote: $0.content,
+                                                               dateCreated: $0.dateCreated,
+                                                               dateModified: $0.dateModified) }
         }
     }
+    private(set) var textForHeaderLabel = "Notes"
+    
+    // MARK: - Inits
     
     init() {
         getNotes()
-        notes.forEach { note in
-            CoreDataManager.shared.deleteNote(note)
-        }
     }
+    
+    // MARK: - Public methods
     
     func createNote() {
         let newNote = CoreDataManager.shared.createNote()
@@ -44,7 +53,14 @@ final class NotesScreenViewModel {
         goToEditNote(note)
     }
     
-    func goToEditNote(_ note: Note) {
+    // MARK: - Private methods
+    
+    private func indexForNote(id: ObjectIdentifier) -> Int {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return 0 }
+        return index
+    }
+    
+    private func goToEditNote(_ note: Note) {
         let viewModel = CreateNoteViewModel(note: note)
         viewModel.delegate = self
         let viewController = CreateNoteViewController(with: viewModel)
@@ -52,13 +68,11 @@ final class NotesScreenViewModel {
     }
     
     private func updateNote(at index: Int) {
-        cellViewModels[index].titleNote = notes[index].title
-        cellViewModels[index].textNote = notes[index].content
-    }
-    
-    private func indexForNote(id: UUID?) -> Int {
-        guard let index = notes.firstIndex(where: { $0.id == id }) else { return 0 }
-        return index
+        let note = notes[index]
+        cellViewModels[index] = NoteViewCellViewModel(titleNote: note.title,
+                                                      textNote: note.content,
+                                                      dateCreated: note.dateCreated,
+                                                      dateModified: note.dateModified)
     }
     
     private func getNotes() {
@@ -73,10 +87,19 @@ final class NotesScreenViewModel {
     }
 }
 
+// MARK: - NotesScreenDelegate
+
 extension NotesScreenViewModel: NotesScreenDelegate {
-    func refreshNote(at id: UUID?) {
+    func refreshNote(with id: ObjectIdentifier) {
         let index = indexForNote(id: id)
-        cellViewModels[index].
+        updateNote(at: index)
+        didUpdateCollection?()
+    }
+    
+    func deleteNote(with id: ObjectIdentifier) {
+        let index = indexForNote(id: id)
+        notes.remove(at: index)
+        didUpdateCollection?()
     }
 }
 

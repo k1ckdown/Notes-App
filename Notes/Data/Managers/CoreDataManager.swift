@@ -47,7 +47,7 @@ final class CoreDataManager {
 extension CoreDataManager {
     func createNote() -> Note {
         let note = Note(context: context)
-
+        
         note.title = ""
         note.content = ""
         note.dateCreated = ""
@@ -66,12 +66,10 @@ extension CoreDataManager {
         } catch {
             completion(.failure(error))
         }
-
     }
 
     func deleteNote(_ note: Note) {
         context.delete(note)
         saveContext()
     }
-
 }

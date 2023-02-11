@@ -11,7 +11,6 @@
 		4920CA2C2995315D004DDA5F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4920CA2B2995315D004DDA5F /* SceneDelegate.swift */; };
 		4920CA332995315E004DDA5F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4920CA322995315E004DDA5F /* Assets.xcassets */; };
 		4920CA362995315E004DDA5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4920CA342995315E004DDA5F /* LaunchScreen.storyboard */; };
-		49AA7DE12995327D007CD80F /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DE02995327D007CD80F /* Note.swift */; };
 		49AA7DE7299538E3007CD80F /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DE6299538E3007CD80F /* UIColor.swift */; };
 		49AA7DEB29953A1D007CD80F /* NotesScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DEA29953A1D007CD80F /* NotesScreenViewController.swift */; };
 		49AA7DED29953AF2007CD80F /* NotesScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA7DEC29953AF2007CD80F /* NotesScreenViewModel.swift */; };
@@ -33,7 +32,6 @@
 		4920CA322995315E004DDA5F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4920CA352995315E004DDA5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4920CA372995315E004DDA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49AA7DE02995327D007CD80F /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		49AA7DE6299538E3007CD80F /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		49AA7DEA29953A1D007CD80F /* NotesScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesScreenViewController.swift; sourceTree = "<group>"; };
 		49AA7DEC29953AF2007CD80F /* NotesScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesScreenViewModel.swift; sourceTree = "<group>"; };
@@ -83,19 +81,10 @@
 				49AA7DF129953CBD007CD80F /* Application */,
 				49AA7DE8299539CE007CD80F /* Scenes */,
 				49AA7DE5299538C3007CD80F /* Extensions */,
-				49AA7DDF29953273007CD80F /* Models */,
 				4920CA322995315E004DDA5F /* Assets.xcassets */,
 				4920CA372995315E004DDA5F /* Info.plist */,
 			);
 			path = Notes;
-			sourceTree = "<group>";
-		};
-		49AA7DDF29953273007CD80F /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				49AA7DE02995327D007CD80F /* Note.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		49AA7DE5299538C3007CD80F /* Extensions */ = {
@@ -257,7 +246,6 @@
 				49E9AEAF2996025200EC28F3 /* CreateNoteViewModel.swift in Sources */,
 				49AA7DF429954301007CD80F /* NoteViewCell.swift in Sources */,
 				49E9AEAD2996023800EC28F3 /* CreateNoteViewController.swift in Sources */,
-				49AA7DE12995327D007CD80F /* Note.swift in Sources */,
 				49E9AEF82996BBB600EC28F3 /* Date.swift in Sources */,
 				49E9AEFF2996C4C400EC28F3 /* CoreDataManager.swift in Sources */,
 				49AA7DED29953AF2007CD80F /* NotesScreenViewModel.swift in Sources */,

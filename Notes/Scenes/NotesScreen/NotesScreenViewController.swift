@@ -10,8 +10,10 @@ import SnapKit
 
 class NotesScreenViewController: UIViewController {
     
+    // MARK: - Private properties
+    
     private let headerLabel = UILabel()
-    private let addNoteButton = UIButton(type: .system)
+    private let createNoteButton = UIButton(type: .system)
     
     lazy private var notesCollection: UICollectionView = {
         let layout = NoteLayout()
@@ -21,6 +23,8 @@ class NotesScreenViewController: UIViewController {
     
     private let viewModel: NotesScreenViewModel
     
+    // MARK: - Inits
+    
     init(with viewModel: NotesScreenViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -29,6 +33,8 @@ class NotesScreenViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Lifecycle methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,16 +48,20 @@ class NotesScreenViewController: UIViewController {
         setupBackBarButtonItem()
     }
     
+    // MARK: - Actions
+    
     @objc
     private func handleAddNoteButton() {
         viewModel.createNote()
     }
     
+    //  MARK: - Setup
+    
     private func setup() {
         setupSuperView()
         setupHeaderLabel()
         setupNotesCollection()
-        setupAddNoteButton()
+        setupCreateNoteButton()
     }
     
     private func setupSuperView() {
@@ -86,20 +96,19 @@ class NotesScreenViewController: UIViewController {
             make.top.equalTo(headerLabel.snp.bottom).offset(20)
             make.leading.trailing.bottom.equalToSuperview()
         }
-        
     }
     
-    private func setupAddNoteButton() {
-        view.addSubview(addNoteButton)
+    private func setupCreateNoteButton() {
+        view.addSubview(createNoteButton)
         
-        addNoteButton.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
-        addNoteButton.imageView?.layer.transform = CATransform3DMakeScale(1, 1, 1)
-        addNoteButton.tintColor = .white
-        addNoteButton.backgroundColor = .appColor
-        addNoteButton.layer.cornerRadius = 65 / 2
-        addNoteButton.addTarget(self, action: #selector(handleAddNoteButton), for: .touchUpInside)
+        createNoteButton.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        createNoteButton.imageView?.layer.transform = CATransform3DMakeScale(1, 1, 1)
+        createNoteButton.tintColor = .white
+        createNoteButton.backgroundColor = .appColor
+        createNoteButton.layer.cornerRadius = 65 / 2
+        createNoteButton.addTarget(self, action: #selector(handleAddNoteButton), for: .touchUpInside)
         
-        addNoteButton.snp.makeConstraints { make in
+        createNoteButton.snp.makeConstraints { make in
             make.height.width.equalTo(65)
             make.trailing.bottom.equalToSuperview().inset(40)
         }
@@ -112,17 +121,7 @@ class NotesScreenViewController: UIViewController {
     }
 }
 
-private extension NotesScreenViewController {
-    private func bindToViewModel() {
-        viewModel.didGoToNextScreen = { [weak self] viewController in
-            self?.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        viewModel.didUpdateCollection = { [weak self] in
-            self?.notesCollection.reloadData()
-        }
-    }
-}
+// MARK: - UICollectionViewDataSource
 
 extension NotesScreenViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -139,9 +138,25 @@ extension NotesScreenViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+
 extension NotesScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.editNote(at: indexPath.item)
+    }
+}
+
+// MARK: - Building ViewModel
+
+private extension NotesScreenViewController {
+    private func bindToViewModel() {
+        viewModel.didGoToNextScreen = { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        viewModel.didUpdateCollection = { [weak self] in
+            self?.notesCollection.reloadData()
+        }
     }
 }
 
