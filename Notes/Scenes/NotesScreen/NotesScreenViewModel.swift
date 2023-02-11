@@ -28,6 +28,9 @@ final class NotesScreenViewModel {
     
     init() {
         getNotes()
+        notes.forEach { note in
+            CoreDataManager.shared.deleteNote(note)
+        }
     }
     
     func createNote() {
@@ -48,6 +51,16 @@ final class NotesScreenViewModel {
         didGoToNextScreen?(viewController)
     }
     
+    private func updateNote(at index: Int) {
+        cellViewModels[index].titleNote = notes[index].title
+        cellViewModels[index].textNote = notes[index].content
+    }
+    
+    private func indexForNote(id: UUID?) -> Int {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return 0 }
+        return index
+    }
+    
     private func getNotes() {
         CoreDataManager.shared.fetchNotes { [weak self] result in
             switch result {
@@ -62,7 +75,8 @@ final class NotesScreenViewModel {
 
 extension NotesScreenViewModel: NotesScreenDelegate {
     func refreshNote(at id: UUID?) {
-        print("Xm")
+        let index = indexForNote(id: id)
+        cellViewModels[index].
     }
 }
 
