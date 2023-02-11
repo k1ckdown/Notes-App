@@ -4,6 +4,7 @@
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="dateCreated" optional="YES" attributeType="String"/>
         <attribute name="dateModified" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
 </model>

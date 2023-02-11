@@ -44,7 +44,7 @@ class NotesScreenViewController: UIViewController {
     
     @objc
     private func handleAddNoteButton() {
-        viewModel.goToCreateNote()
+        viewModel.createNote()
     }
     
     private func setup() {
@@ -141,7 +141,7 @@ extension NotesScreenViewController: UICollectionViewDataSource {
 
 extension NotesScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.goToEditNote(at: indexPath.item)
+        viewModel.editNote(at: indexPath.item)
     }
 }
 

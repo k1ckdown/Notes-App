@@ -13,6 +13,8 @@ final class CreateNoteViewModel {
     var didBeginEditingNote: (() -> Void)?
     var didEndEditingNote: (() -> Void)?
     
+    weak var delegate: NotesScreenDelegate?
+    
     private let note: Note?
     private var shouldShowSubTitle = false
     
@@ -21,17 +23,17 @@ final class CreateNoteViewModel {
     }
     
     func getTitle() -> String {
-        guard let note = note else { return ""}
-        return note.title
+        guard let title = note?.title else { return "" }
+        return title
     }
     
     func getText() -> String {
-        guard let note = note else { return "Your new note..."}
-        return note.text
+        guard let content = note?.content else { return "Your new note..."}
+        return content
     }
     
     func getTextColor() -> UIColor {
-        guard note != nil else { return .lightGray}
+        guard note?.content != nil else { return .lightGray}
         return .white
     }
     
@@ -43,8 +45,11 @@ final class CreateNoteViewModel {
         didEndEditingNote?()
         guard let title = title, let text = text else { return }
         
-        let note = CoreDataManager.shared.createNote()
-        print(title)
-        print(text)
+        note?.title = title
+        note?.content = text
+        note?.dateCreated = Date().format()
+        note?.dateModified = Date().format()
+        
+        delegate?.refreshNote(at: note?.id)
     }
 }
