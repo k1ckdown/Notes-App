@@ -50,8 +50,8 @@ extension CoreDataManager {
         
         note.title = ""
         note.content = ""
-        note.dateCreated = ""
-        note.dateModified = ""
+        note.dateCreated = Date()
+        note.dateModified = Date()
 
         saveContext()
         return note

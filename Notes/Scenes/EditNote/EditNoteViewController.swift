@@ -45,7 +45,7 @@ class EditNoteViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         if self.isMovingFromParent {
-            viewModel.shouldSaveNote(with : titleNoteTextField.text, and: textNoteTextView.text)
+            viewModel.shouldSaveNote(with: titleNoteTextField.text, and: textNoteTextView.text)
         }
     }
     
@@ -61,18 +61,19 @@ class EditNoteViewController: UIViewController {
     }
     
     @objc
-    func updateTextView(param: Notification) {
-        let userInfo = param.userInfo
+    private func keyboardWillShow(sender: NSNotification) {
+        guard let userInfo = sender.userInfo else { return }
+        guard let getKeyboardRect = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
 
-        guard let getKeyboardRect = (userInfo![UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
         let keyboardFrame = self.view.convert(getKeyboardRect, to: view.window)
+        textNoteTextView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
+        textNoteTextView.scrollIndicatorInsets = textNoteTextView.contentInset
+        textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
+    }
 
-        if param.name == UIResponder.keyboardWillHideNotification {
-            textNoteTextView.contentInset = UIEdgeInsets.zero
-        } else {
-            textNoteTextView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
-            textNoteTextView.scrollIndicatorInsets = textNoteTextView.contentInset
-        }
+    @objc
+    private func keyboardWillHide(sender: NSNotification) {
+        textNoteTextView.contentInset = .zero
         textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
     }
     
@@ -144,8 +145,8 @@ class EditNoteViewController: UIViewController {
         textNoteTextView.keyboardDismissMode = .onDrag
         textNoteTextView.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: UIResponder.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         textNoteTextView.snp.makeConstraints { make in
             make.top.equalTo(titleNoteTextField.snp.bottom).offset(13)
@@ -190,6 +191,10 @@ extension EditNoteViewController: UITextViewDelegate {
 
 private extension EditNoteViewController {
     private func bindToViewModel() {
+        viewModel.didShowKeyboard = { [weak self] in
+            self?.titleNoteTextField.becomeFirstResponder()
+        }
+        
         viewModel.didBeginEditingNote = { [weak self] in
             self?.textNoteTextView.text = ""
             self?.textNoteTextView.textColor = .white
@@ -198,10 +203,6 @@ private extension EditNoteViewController {
         viewModel.didEndEditingNote = { [weak self] placeholder in
             self?.textNoteTextView.text = placeholder
             self?.textNoteTextView.textColor = .lightGray
-        }
-        
-        viewModel.didShowKeyboard = { [weak self] in
-            self?.titleNoteTextField.becomeFirstResponder()
         }
     }
 }

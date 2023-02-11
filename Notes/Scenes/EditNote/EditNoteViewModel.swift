@@ -21,6 +21,7 @@ final class EditNoteViewModel {
     // MARK: - Private properties
     
     private let note: Note
+    private var isEdited = true
     private let placeholderForContent = "Your new note..."
     
     // MARK: - Inits
@@ -40,12 +41,17 @@ final class EditNoteViewModel {
     }
     
     func shouldSaveNote(with title: String?, and text: String?) {
-        guard let title = title, let text = text else { return }
+        guard let noteTitle = note.title, let noteContent = note.content else { return }
+        guard let newTitle = title, let newText = text else { return }
         
-        if (text.isEmpty || text == placeholderForContent) && title.isEmpty {
+        if (newText.isEmpty || newText == placeholderForContent) && newTitle.isEmpty {
             deleteNote()
         } else {
-            createNote(title: title, text: text)
+            if newTitle == noteTitle && newText == noteContent {
+                isEdited = false
+            }
+            
+            createNote(title: newTitle, text: newText)
         }
     }
     
@@ -80,16 +86,32 @@ final class EditNoteViewModel {
     
     // MARK: - Private methods
     
+    private func isNewNote() -> Bool {
+        guard let title = note.title, let content = note.content else { return true}
+
+        if title.isEmpty && content.isEmpty {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     private func deleteNote() {
         delegate?.deleteNote(with: note.id)
         CoreDataManager.shared.deleteNote(note)
     }
     
     private func createNote(title: String, text: String) {
+        if isNewNote() {
+            note.dateCreated = Date()
+        }
+        
+        if isEdited {
+            note.dateModified = Date()
+        }
+        
         note.title = title
         note.content = text == placeholderForContent ? "" : text
-        note.dateCreated = Date().format()
-        note.dateModified = Date().format()
         
         CoreDataManager.shared.saveContext()
         delegate?.refreshNote(with: note.id)

@@ -13,7 +13,7 @@ extension Date {
         dateFormatter.timeZone = TimeZone.current
         
         if Calendar.current.isDateInToday(self) {
-            dateFormatter.dateFormat = "h:mm a"
+            dateFormatter.dateFormat = "HH:mm"
         } else {
             dateFormatter.dateFormat = "MMM d, yyyy"
         }

@@ -28,8 +28,8 @@ final class NotesScreenViewModel {
         didSet {
             cellViewModels = notes.map { NoteViewCellViewModel(titleNote: $0.title,
                                                                textNote: $0.content,
-                                                               dateCreated: $0.dateCreated,
-                                                               dateModified: $0.dateModified) }
+                                                               dateCreated: $0.dateCreated?.format(),
+                                                               dateModified: $0.dateModified?.format()) }
         }
     }
     private(set) var textForHeaderLabel = "Notes"
@@ -71,8 +71,15 @@ final class NotesScreenViewModel {
         let note = notes[index]
         cellViewModels[index] = NoteViewCellViewModel(titleNote: note.title,
                                                       textNote: note.content,
-                                                      dateCreated: note.dateCreated,
-                                                      dateModified: note.dateModified)
+                                                      dateCreated: note.dateCreated?.format(),
+                                                      dateModified: note.dateModified?.format())
+    }
+    
+    private func sortListOfNote() {
+        notes = notes.sorted { noteOne, noteTwo in
+            guard let dateOne = noteOne.dateModified, let dateTwo = noteTwo.dateModified else { return false }
+            return dateOne > dateTwo
+        }
     }
     
     private func getNotes() {
@@ -93,6 +100,7 @@ extension NotesScreenViewModel: NotesScreenDelegate {
     func refreshNote(with id: ObjectIdentifier) {
         let index = indexForNote(id: id)
         updateNote(at: index)
+        sortListOfNote()
         didUpdateCollection?()
     }
     
