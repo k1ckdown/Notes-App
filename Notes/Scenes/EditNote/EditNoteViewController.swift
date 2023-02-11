@@ -1,5 +1,5 @@
 //
-//  CreateNoteViewController.swift
+//  EditNoteViewController.swift
 //  Notes
 //
 //  Created by Ivan Semenov on 10.02.2023.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-class CreateNoteViewController: UIViewController {
+class EditNoteViewController: UIViewController {
     
     // MARK: - Private properties
     
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
     
-    private let viewModel: CreateNoteViewModel
+    private let viewModel: EditNoteViewModel
     
     // MARK: - Inits
     
-    init(with viewModel: CreateNoteViewModel) {
+    init(with viewModel: EditNoteViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -157,7 +157,7 @@ class CreateNoteViewController: UIViewController {
 
 // MARK: - UITextFieldDelegate
 
-extension CreateNoteViewController: UITextFieldDelegate {
+extension EditNoteViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         showDoneButton()
     }
@@ -174,7 +174,7 @@ extension CreateNoteViewController: UITextFieldDelegate {
 
 // MARK: - UITextViewDelegate
 
-extension CreateNoteViewController: UITextViewDelegate {
+extension EditNoteViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         viewModel.beginEditingOfNote(content: textView.text)
         showDoneButton()
@@ -188,7 +188,7 @@ extension CreateNoteViewController: UITextViewDelegate {
 
 // MARK: - Building ViewModel
 
-private extension CreateNoteViewController {
+private extension EditNoteViewController {
     private func bindToViewModel() {
         viewModel.didBeginEditingNote = { [weak self] in
             self?.textNoteTextView.text = ""

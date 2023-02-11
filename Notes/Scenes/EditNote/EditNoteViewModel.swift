@@ -1,5 +1,5 @@
 //
-//  CreateNoteViewModel.swift
+//  EditNoteViewModel.swift
 //  Notes
 //
 //  Created by Ivan Semenov on 10.02.2023.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class CreateNoteViewModel {
+final class EditNoteViewModel {
     
     // MARK: - Public properties
     

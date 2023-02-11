@@ -61,9 +61,9 @@ final class NotesScreenViewModel {
     }
     
     private func goToEditNote(_ note: Note) {
-        let viewModel = CreateNoteViewModel(note: note)
+        let viewModel = EditNoteViewModel(note: note)
         viewModel.delegate = self
-        let viewController = CreateNoteViewController(with: viewModel)
+        let viewController = EditNoteViewController(with: viewModel)
         didGoToNextScreen?(viewController)
     }
     
