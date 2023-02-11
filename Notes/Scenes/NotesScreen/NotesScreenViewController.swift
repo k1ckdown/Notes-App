@@ -117,6 +117,10 @@ private extension NotesScreenViewController {
         viewModel.didGoToNextScreen = { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }
+        
+        viewModel.didUpdateCollection = { [weak self] in
+            self?.notesCollection.reloadData()
+        }
     }
 }
 

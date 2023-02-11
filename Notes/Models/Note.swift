@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Note {
+struct Notee {
     let title: String
     let text: String
     let dateCreated: String

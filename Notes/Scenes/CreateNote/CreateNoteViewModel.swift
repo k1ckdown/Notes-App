@@ -42,6 +42,8 @@ final class CreateNoteViewModel {
     func createNote(title: String?, text: String?) {
         didEndEditingNote?()
         guard let title = title, let text = text else { return }
+        
+        let note = CoreDataManager.shared.createNote()
         print(title)
         print(text)
     }
