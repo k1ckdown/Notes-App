@@ -132,11 +132,19 @@
 		49AA7DF2299542B7007CD80F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				49CF066A29992E2800D04086 /* NoteViewCell */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		49CF066A29992E2800D04086 /* NoteViewCell */ = {
+			isa = PBXGroup;
+			children = (
 				49AA7DF329954301007CD80F /* NoteViewCell.swift */,
 				49AA7DF52995435C007CD80F /* NoteViewCellViewModel.swift */,
 				49AA7DF729954390007CD80F /* NoteLayout.swift */,
 			);
-			path = Views;
+			path = NoteViewCell;
 			sourceTree = "<group>";
 		};
 		49E9AEAB299601E300EC28F3 /* EditNote */ = {

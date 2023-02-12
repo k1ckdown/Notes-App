@@ -13,6 +13,7 @@ class EditNoteViewController: UIViewController {
     
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
+    private let contentBorderView = UIView()
     
     private let viewModel: EditNoteViewModel
     
@@ -102,6 +103,7 @@ class EditNoteViewController: UIViewController {
         setupDoneButton()
         setupTitleNoteTextField()
         setupTextNoteTextView()
+        setupContentBorderView()
     }
     
     private func setupSuperView() {
@@ -125,7 +127,7 @@ class EditNoteViewController: UIViewController {
         titleNoteTextField.adjustsFontSizeToFitWidth = true
         titleNoteTextField.minimumFontSize = 0.6
         titleNoteTextField.borderStyle = .none
-        titleNoteTextField.attributedPlaceholder = NSAttributedString(string: "New Note", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        titleNoteTextField.attributedPlaceholder = NSAttributedString(string: "New Note", attributes: [NSAttributedString.Key.foregroundColor: UIColor.previewText])
         titleNoteTextField.enablesReturnKeyAutomatically = true
         titleNoteTextField.keyboardAppearance = .dark
         titleNoteTextField.delegate = self
@@ -158,6 +160,19 @@ class EditNoteViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(15)
             make.bottom.equalToSuperview()
         }        
+    }
+    
+    private func setupContentBorderView() {
+        view.addSubview(contentBorderView)
+        
+        contentBorderView.backgroundColor = .appColor
+        contentBorderView.layer.cornerRadius = 5
+        
+        contentBorderView.snp.makeConstraints { make in
+            make.top.leading.equalTo(textNoteTextView)
+            make.height.equalTo(150)
+            make.width.equalTo(3)
+        }
     }
 }
 
@@ -209,7 +224,7 @@ private extension EditNoteViewController {
         
         viewModel.showContentPlaceholder = { [weak self] placeholder in
             self?.textNoteTextView.text = placeholder
-            self?.textNoteTextView.textColor = .lightGray
+            self?.textNoteTextView.textColor = .previewText
         }
     }
 }
