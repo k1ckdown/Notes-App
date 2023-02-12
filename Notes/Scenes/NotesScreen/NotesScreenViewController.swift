@@ -43,6 +43,11 @@ class NotesScreenViewController: UIViewController {
         bindToViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.updateHeader()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupBackBarButtonItem()
@@ -71,13 +76,12 @@ class NotesScreenViewController: UIViewController {
     private func setupHeaderLabel() {
         view.addSubview(headerLabel)
         
-        headerLabel.text = viewModel.textForHeaderLabel
         headerLabel.textColor = .headerText
         headerLabel.textAlignment = .left
         headerLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
         
         headerLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
+            make.top.equalToSuperview().offset(80)
             make.leading.equalToSuperview().offset(60)
         }
     }
@@ -156,6 +160,16 @@ private extension NotesScreenViewController {
         
         viewModel.didUpdateCollection = { [weak self] in
             self?.notesCollection.reloadData()
+        }
+        
+        viewModel.didUpdateHeader = { [weak self] header in
+            self?.headerLabel.text = header
+        }
+        
+        viewModel.showReceivedError = { [weak self] errorDescription in
+            let alertController = UIAlertController(title: "Error", message: errorDescription, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(alertController, animated: true)
         }
     }
 }

@@ -9,8 +9,10 @@ import Foundation
 import UIKit
 
 protocol NotesScreenDelegate: AnyObject {
-    func refreshNote(with id: ObjectIdentifier)
+    func addNewNoteInCollection(note: Note)
+    func updateNoteInCollection(with id: ObjectIdentifier)
     func deleteNote(with id: ObjectIdentifier)
+    func showError(desc: String)
 }
 
 final class NotesScreenViewModel {
@@ -19,6 +21,8 @@ final class NotesScreenViewModel {
     
     var didGoToNextScreen: ((UIViewController) -> Void)?
     var didUpdateCollection: (() -> Void)?
+    var didUpdateHeader: ((String) -> Void)?
+    var showReceivedError: ((String) -> Void)?
     
     var cellViewModels: [NoteViewCellViewModel] = []
     
@@ -32,7 +36,6 @@ final class NotesScreenViewModel {
                                                                dateModified: $0.dateModified?.format()) }
         }
     }
-    private(set) var textForHeaderLabel = "Notes"
     
     // MARK: - Inits
     
@@ -43,14 +46,18 @@ final class NotesScreenViewModel {
     // MARK: - Public methods
     
     func createNote() {
-        let newNote = CoreDataManager.shared.createNote()
-        notes.insert(newNote, at: 0)
-        goToEditNote(newNote)
+        goToEditNote(nil)
     }
     
     func editNote(at index: Int) {
         let note = notes[index]
         goToEditNote(note)
+    }
+    
+    func updateHeader() {
+        let numberOfNotes = notes.count
+        let headerText = "\(numberOfNotes) \(numberOfNotes == 1 ? "Note" : "Notes")"
+        didUpdateHeader?(headerText)
     }
     
     // MARK: - Private methods
@@ -60,11 +67,11 @@ final class NotesScreenViewModel {
         return index
     }
     
-    private func goToEditNote(_ note: Note) {
-        let viewModel = EditNoteViewModel(note: note)
-        viewModel.delegate = self
-        let viewController = EditNoteViewController(with: viewModel)
-        didGoToNextScreen?(viewController)
+    private func sortListOfNote() {
+        notes = notes.sorted { noteOne, noteTwo in
+            guard let dateOne = noteOne.dateModified, let dateTwo = noteTwo.dateModified else { return false }
+            return dateOne > dateTwo
+        }
     }
     
     private func updateNote(at index: Int) {
@@ -75,20 +82,25 @@ final class NotesScreenViewModel {
                                                       dateModified: note.dateModified?.format())
     }
     
-    private func sortListOfNote() {
-        notes = notes.sorted { noteOne, noteTwo in
-            guard let dateOne = noteOne.dateModified, let dateTwo = noteTwo.dateModified else { return false }
-            return dateOne > dateTwo
-        }
+    private func goToEditNote(_ note: Note?) {
+        let viewModel = EditNoteViewModel(note: note)
+        viewModel.delegate = self
+        let viewController = EditNoteViewController(with: viewModel)
+        didGoToNextScreen?(viewController)
     }
     
     private func getNotes() {
-        CoreDataManager.shared.fetchNotes { [weak self] result in
+        NoteService.shared.fetchNotes { result in
             switch result {
-            case .success(let notes):
-                self?.notes = notes
+            case .success(let downloadedNotes):
+                notes = downloadedNotes
+                DispatchQueue.main.async { [weak self] in
+                    self?.didUpdateCollection?()
+                }
             case .failure(let error):
-                print(error.localizedDescription)
+                DispatchQueue.main.async { [weak self] in
+                    self?.showReceivedError?(error.errorDescription)
+                }
             }
         }
     }
@@ -97,7 +109,13 @@ final class NotesScreenViewModel {
 // MARK: - NotesScreenDelegate
 
 extension NotesScreenViewModel: NotesScreenDelegate {
-    func refreshNote(with id: ObjectIdentifier) {
+    func addNewNoteInCollection(note: Note) {
+        notes.insert(note, at: 0)
+        updateHeader()
+        didUpdateCollection?()
+    }
+    
+    func updateNoteInCollection(with id: ObjectIdentifier) {
         let index = indexForNote(id: id)
         updateNote(at: index)
         sortListOfNote()
@@ -107,7 +125,12 @@ extension NotesScreenViewModel: NotesScreenDelegate {
     func deleteNote(with id: ObjectIdentifier) {
         let index = indexForNote(id: id)
         notes.remove(at: index)
+        updateHeader()
         didUpdateCollection?()
+    }
+    
+    func showError(desc: String) {
+        showReceivedError?(desc)
     }
 }
 

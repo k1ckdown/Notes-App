@@ -36,6 +36,11 @@ class EditNoteViewController: UIViewController {
         bindToViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.shouldShowContentPlaceholder(content: textNoteTextView.text)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.shouldShowKeyboard()
@@ -43,10 +48,7 @@ class EditNoteViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        if self.isMovingFromParent {
-            viewModel.shouldSaveNote(with: titleNoteTextField.text, and: textNoteTextView.text)
-        }
+        viewModel.shouldDeleteNote(with: titleNoteTextField.text, and: textNoteTextView.text)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -61,6 +63,12 @@ class EditNoteViewController: UIViewController {
     }
     
     @objc
+    private func keyboardWillHide(sender: NSNotification) {
+        textNoteTextView.contentInset = .zero
+        textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
+    }
+    
+    @objc
     private func keyboardWillShow(sender: NSNotification) {
         guard let userInfo = sender.userInfo else { return }
         guard let getKeyboardRect = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
@@ -70,14 +78,12 @@ class EditNoteViewController: UIViewController {
         textNoteTextView.scrollIndicatorInsets = textNoteTextView.contentInset
         textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
     }
-
-    @objc
-    private func keyboardWillHide(sender: NSNotification) {
-        textNoteTextView.contentInset = .zero
-        textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
-    }
     
     // MARK: - Private methods
+    
+    private func endEditingOfNote() {
+        viewModel.shouldSaveNote(with: titleNoteTextField.text, and: textNoteTextView.text)
+    }
     
     private func showDoneButton() {
         self.navigationItem.rightBarButtonItem?.isEnabled = true
@@ -119,7 +125,7 @@ class EditNoteViewController: UIViewController {
         titleNoteTextField.adjustsFontSizeToFitWidth = true
         titleNoteTextField.minimumFontSize = 0.6
         titleNoteTextField.borderStyle = .none
-        titleNoteTextField.placeholder = "New Note"
+        titleNoteTextField.attributedPlaceholder = NSAttributedString(string: "New Note", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         titleNoteTextField.enablesReturnKeyAutomatically = true
         titleNoteTextField.keyboardAppearance = .dark
         titleNoteTextField.delegate = self
@@ -135,9 +141,8 @@ class EditNoteViewController: UIViewController {
         view.addSubview(textNoteTextView)
         
         textNoteTextView.text = viewModel.getText()
-        textNoteTextView.textColor = viewModel.getTextColor()
         textNoteTextView.tintColor = .appColor
-        textNoteTextView.font = UIFont.systemFont(ofSize: 21)
+        textNoteTextView.font = UIFont.systemFont(ofSize: 18)
         textNoteTextView.backgroundColor = .clear
         textNoteTextView.enablesReturnKeyAutomatically = true
         textNoteTextView.keyboardAppearance = .dark
@@ -150,7 +155,7 @@ class EditNoteViewController: UIViewController {
         
         textNoteTextView.snp.makeConstraints { make in
             make.top.equalTo(titleNoteTextField.snp.bottom).offset(13)
-            make.leading.trailing.equalToSuperview().inset(23)
+            make.leading.trailing.equalToSuperview().inset(15)
             make.bottom.equalToSuperview()
         }        
     }
@@ -165,6 +170,7 @@ extension EditNoteViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         hideDoneButton()
+        endEditingOfNote()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -177,12 +183,13 @@ extension EditNoteViewController: UITextFieldDelegate {
 
 extension EditNoteViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        viewModel.beginEditingOfNote(content: textView.text)
+        viewModel.shouldShowContentPlaceholder(content: textView.text)
         showDoneButton()
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        viewModel.endEditingOfNote(content: textView.text)
+        viewModel.shouldShowContentPlaceholder(content: textView.text)
+        endEditingOfNote()
         hideDoneButton()
     }
 }
@@ -191,16 +198,16 @@ extension EditNoteViewController: UITextViewDelegate {
 
 private extension EditNoteViewController {
     private func bindToViewModel() {
-        viewModel.didShowKeyboard = { [weak self] in
+        viewModel.showKeyboard = { [weak self] in
             self?.titleNoteTextField.becomeFirstResponder()
         }
         
-        viewModel.didBeginEditingNote = { [weak self] in
+        viewModel.hideContentPlaceholder = { [weak self] in
             self?.textNoteTextView.text = ""
             self?.textNoteTextView.textColor = .white
         }
         
-        viewModel.didEndEditingNote = { [weak self] placeholder in
+        viewModel.showContentPlaceholder = { [weak self] placeholder in
             self?.textNoteTextView.text = placeholder
             self?.textNoteTextView.textColor = .lightGray
         }

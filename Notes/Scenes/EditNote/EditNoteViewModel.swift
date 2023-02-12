@@ -12,108 +12,118 @@ final class EditNoteViewModel {
     
     // MARK: - Public properties
     
-    var didBeginEditingNote: (() -> Void)?
-    var didEndEditingNote: ((String) -> Void)?
-    var didShowKeyboard: (() -> Void)?
+    var showContentPlaceholder: ((String) -> Void)?
+    var hideContentPlaceholder: (() -> Void)?
+    var showKeyboard: (() -> Void)?
     
     weak var delegate: NotesScreenDelegate?
     
     // MARK: - Private properties
     
-    private let note: Note
-    private var isEdited = true
-    private let placeholderForContent = "Your new note..."
+    private var note: Note?
+    private let contentPlaceholder = "Your new note..."
     
     // MARK: - Inits
     
-    init(note: Note) {
+    init(note: Note?) {
         self.note = note
     }
     
     // MARK: - Public methods
     
     func shouldShowKeyboard() {
-        guard let title = note.title, let content = note.content else { return }
+        if note == nil {
+            showKeyboard?()
+        }
+    }
+    
+    func shouldShowContentPlaceholder(content: String) {
+        if content.isBlank {
+            showContentPlaceholder?(contentPlaceholder)
+        } else if content == contentPlaceholder {
+            hideContentPlaceholder?()
+        }
+    }
+    
+    func shouldDeleteNote(with title: String?, and text: String?) {
+        guard let title = title, let text = text else { return }
         
-        if title.isEmpty && content.isEmpty {
-            didShowKeyboard?()
+        if title.isBlank && (text.isBlank || text == contentPlaceholder) {
+            deleteNote(note: note)
         }
     }
     
     func shouldSaveNote(with title: String?, and text: String?) {
-        guard let noteTitle = note.title, let noteContent = note.content else { return }
         guard let newTitle = title, let newText = text else { return }
-        
-        if (newText.isEmpty || newText == placeholderForContent) && newTitle.isEmpty {
-            deleteNote()
-        } else {
-            if newTitle == noteTitle && newText == noteContent {
-                isEdited = false
-            }
-            
+        guard let note = note else {
             createNote(title: newTitle, text: newText)
+            return
         }
-    }
-    
-    func beginEditingOfNote(content: String) {
-        if content == placeholderForContent {
-            didBeginEditingNote?()
-        }
-    }
-    
-    func endEditingOfNote(content: String) {
-        if content.isEmpty {
-            didEndEditingNote?(placeholderForContent)
-        }
+        
+        updateNote(note: note, title: newTitle, text: newText)
     }
     
     func getTitle() -> String {
-        guard let title = note.title else { return "" }
+        guard let title = note?.title else { return "" }
         return title
     }
     
     func getText() -> String {
-        guard let content = note.content else { return placeholderForContent}
-        guard !content.isEmpty else { return placeholderForContent }
+        guard let content = note?.content else { return ""}
+        guard !content.isBlank else { return "" }
         return content
-    }
-    
-    func getTextColor() -> UIColor {
-        guard let content = note.content else { return .lightGray}
-        guard !content.isEmpty else { return .lightGray }
-        return .white
     }
     
     // MARK: - Private methods
     
-    private func isNewNote() -> Bool {
-        guard let title = note.title, let content = note.content else { return true}
-
-        if title.isEmpty && content.isEmpty {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    private func deleteNote() {
+    private func deleteNote(note: Note?) {
+        guard let note = note else { return }
+        
         delegate?.deleteNote(with: note.id)
-        CoreDataManager.shared.deleteNote(note)
+        NoteService.shared.deleteNote(note) { result in
+            switch result {
+            case .success():
+                return
+            case .failure(let error):
+                delegate?.showError(desc: error.errorDescription)
+            }
+        }
     }
     
     private func createNote(title: String, text: String) {
-        if isNewNote() {
-            note.dateCreated = Date()
+        if title.isBlank && (text.isBlank || text == contentPlaceholder) { return }
+        let content = text == contentPlaceholder ? "" : text
+        
+        NoteService.shared.createNote(title: title,
+                                      content: content,
+                                      dateCreated: Date(),
+                                      dateModified: Date()) { result in
+            switch result {
+            case .success(let note):
+                self.note = note
+                delegate?.addNewNoteInCollection(note: note)
+            case .failure(let error):
+                delegate?.showError(desc: error.errorDescription)
+            }
         }
+    }
+    
+    private func updateNote(note: Note, title: String, text: String) {
+        let content = text == contentPlaceholder ? "" : text
+        guard let oldTitle = note.title, let oldText = note.content else { return }
+        if title == oldTitle && content == oldText { return }
         
-        if isEdited {
-            note.dateModified = Date()
+        NoteService.shared.updateNote(note: note,
+                                      title: title,
+                                      content: content,
+                                      dateModified: Date()) { result in
+            switch result {
+            case .success(let note):
+                self.note = note
+                delegate?.updateNoteInCollection(with: note.id)
+            case .failure(let error):
+                self.delegate?.showError(desc: error.errorDescription)
+            }
         }
-        
-        note.title = title
-        note.content = text == placeholderForContent ? "" : text
-        
-        CoreDataManager.shared.saveContext()
-        delegate?.refreshNote(with: note.id)
     }
 }

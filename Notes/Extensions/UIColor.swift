@@ -10,9 +10,9 @@ import UIKit
 
 extension UIColor {
     static let appColor = #colorLiteral(red: 0.2452885509, green: 0.2754746377, blue: 0.8225845695, alpha: 1)
-    static let backgroundApp = #colorLiteral(red: 0.1344641447, green: 0.149494946, blue: 0.1833471656, alpha: 1)
+    static let backgroundApp = #colorLiteral(red: 0.02745098248, green: 0.02745098248, blue: 0.02745098621, alpha: 1)
     static let headerText = UIColor.white
-    static let backgroungNote = #colorLiteral(red: 0.205090791, green: 0.2200889289, blue: 0.2751899362, alpha: 1)
+    static let backgroundNote = #colorLiteral(red: 0.1098036841, green: 0.1098041013, blue: 0.1183908954, alpha: 1)
     static let previewTitle = UIColor.white
-    static let previewText = UIColor.lightGray
+    static let previewText = #colorLiteral(red: 0.7559766769, green: 0.7609490156, blue: 0.7651658654, alpha: 1)
 }

@@ -52,7 +52,7 @@ final class NoteViewCell: UICollectionViewCell {
     }
     
     private func setupSuperView() {
-        backgroundColor = .backgroungNote
+        backgroundColor = .backgroundNote
         layer.cornerRadius = 10
         clipsToBounds = true
     }
