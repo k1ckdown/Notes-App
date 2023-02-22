@@ -8,6 +8,13 @@
 import Foundation
 import UIKit
 
+protocol EditNoteViewModelDelegate: AnyObject {
+    func addNewNoteInCollection(note: Note)
+    func updateNoteInCollection(with id: ObjectIdentifier)
+    func deleteNote(with id: ObjectIdentifier)
+    func showError(desc: String)
+}
+
 final class EditNoteViewModel {
     
     // MARK: - Public properties
@@ -16,7 +23,7 @@ final class EditNoteViewModel {
     var hideContentPlaceholder: (() -> Void)?
     var showKeyboard: (() -> Void)?
     
-    weak var delegate: NotesScreenDelegate?
+    weak var delegate: EditNoteViewModelDelegate?
     
     // MARK: - Private properties
     

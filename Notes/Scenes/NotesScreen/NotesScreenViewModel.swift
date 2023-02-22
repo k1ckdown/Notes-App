@@ -8,13 +8,6 @@
 import Foundation
 import UIKit
 
-protocol NotesScreenDelegate: AnyObject {
-    func addNewNoteInCollection(note: Note)
-    func updateNoteInCollection(with id: ObjectIdentifier)
-    func deleteNote(with id: ObjectIdentifier)
-    func showError(desc: String)
-}
-
 final class NotesScreenViewModel {
     
     // MARK: - Public properties
@@ -106,9 +99,9 @@ final class NotesScreenViewModel {
     }
 }
 
-// MARK: - NotesScreenDelegate
+// MARK: - EditNoteViewModelDelegate
 
-extension NotesScreenViewModel: NotesScreenDelegate {
+extension NotesScreenViewModel: EditNoteViewModelDelegate {
     func addNewNoteInCollection(note: Note) {
         notes.insert(note, at: 0)
         updateHeader()
