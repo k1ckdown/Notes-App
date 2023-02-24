@@ -22,6 +22,11 @@ final class NoteViewCellViewModel {
         self.titleNote = titleNote ?? ""
         self.textNote = textNote ?? ""
         self.dateCreated = dateCreated ?? ""
-        self.dateModified = dateModified ?? ""
+        
+        if let dateModified = dateModified {
+            self.dateModified = dateModified == dateCreated ? "" : dateModified
+        } else {
+            self.dateModified = ""
+        }
     }
 }
