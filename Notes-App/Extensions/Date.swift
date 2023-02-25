@@ -1,6 +1,6 @@
 //
 //  Date.swift
-//  Notes
+//  Notes-App
 //
 //  Created by Ivan Semenov on 11.02.2023.
 //

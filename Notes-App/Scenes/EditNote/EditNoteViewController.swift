@@ -1,6 +1,6 @@
 //
 //  EditNoteViewController.swift
-//  Notes
+//  Notes-App
 //
 //  Created by Ivan Semenov on 10.02.2023.
 //

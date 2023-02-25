@@ -1,6 +1,6 @@
 //
 //  String.swift
-//  Notes
+//  Notes-App
 //
 //  Created by Ivan Semenov on 12.02.2023.
 //

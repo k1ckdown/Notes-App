@@ -1,6 +1,6 @@
 //
 //  NoteLayoutType.swift
-//  Notes
+//  Notes-App
 //
 //  Created by Ivan Semenov on 26.02.2023.
 //
