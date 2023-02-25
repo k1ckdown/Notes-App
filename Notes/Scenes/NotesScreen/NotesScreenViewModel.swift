@@ -49,6 +49,16 @@ final class NotesScreenViewModel {
         goToEditNote(note)
     }
     
+    func setListLayout() {
+        noteLayoutType = .list
+        didUpdateNoteLayout?(noteLayoutType.layout)
+    }
+    
+    func setGalleryLayout() {
+        noteLayoutType = .gallery
+        didUpdateNoteLayout?(noteLayoutType.layout)
+    }
+    
     func getLayout() -> UICollectionViewFlowLayout {
         return noteLayoutType.layout
     }

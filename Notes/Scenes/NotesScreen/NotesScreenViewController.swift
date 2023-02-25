@@ -15,8 +15,8 @@ class NotesScreenViewController: UIViewController {
     private let headerLabel = UILabel()
     private let createNoteButton = UIButton(type: .system)
     
-    private let galleryNotesButton = UIButton(type: .system)
     private let listNotesButton = UIButton(type: .system)
+    private let galleryNotesButton = UIButton(type: .system)
     
     lazy private var notesCollection: UICollectionView = {
         let layout = viewModel.getLayout()
@@ -37,7 +37,7 @@ class NotesScreenViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Lifecycle methods
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,11 +63,23 @@ class NotesScreenViewController: UIViewController {
         viewModel.createNote()
     }
     
+    @objc
+    private func handleListNotesButton() {
+        viewModel.setListLayout()
+    }
+    
+    @objc
+    private func handleGalleryNotesButton() {
+        viewModel.setGalleryLayout()
+    }
+    
     //  MARK: - Setup
     
     private func setup() {
         setupSuperView()
         setupHeaderLabel()
+        setupListNotesButton()
+        setupGalleryNotesButton()
         setupNotesCollection()
         setupCreateNoteButton()
     }
@@ -86,6 +98,32 @@ class NotesScreenViewController: UIViewController {
         headerLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(80)
             make.leading.equalToSuperview().offset(50)
+        }
+    }
+    
+    private func setupListNotesButton() {
+        view.addSubview(listNotesButton)
+        
+        listNotesButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
+        listNotesButton.tintColor = .layoutButton
+        listNotesButton.addTarget(self, action: #selector(handleListNotesButton), for: .touchUpInside)
+        
+        listNotesButton.snp.makeConstraints { make in
+            make.bottom.equalTo(headerLabel).inset(1.5)
+            make.trailing.equalToSuperview().inset(20)
+        }
+    }
+    
+    private func setupGalleryNotesButton() {
+        view.addSubview(galleryNotesButton)
+
+        galleryNotesButton.setImage(UIImage(systemName: "square.grid.2x2"), for: .normal)
+        galleryNotesButton.tintColor = .layoutButton
+        galleryNotesButton.addTarget(self, action: #selector(handleGalleryNotesButton), for: .touchUpInside)
+        
+        galleryNotesButton.snp.makeConstraints { make in
+            make.bottom.equalTo(headerLabel)
+            make.trailing.equalTo(listNotesButton.snp.leading).offset(-13)
         }
     }
     
@@ -170,7 +208,9 @@ private extension NotesScreenViewController {
         }
         
         viewModel.didUpdateNoteLayout = { [weak self] layout in
-            self?.notesCollection.collectionViewLayout = layout
+            UIView.animate(withDuration: 0.5) {
+                self?.notesCollection.collectionViewLayout = layout
+            }
         }
         
         viewModel.showReceivedError = { [weak self] errorDescription in
