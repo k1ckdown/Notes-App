@@ -1,5 +1,5 @@
 //
-//  NoteLayout.swift
+//  NoteGalleryLayout.swift
 //  Notes
 //
 //  Created by Ivan Semenov on 09.02.2023.
@@ -7,8 +7,7 @@
 
 import UIKit
 
-class NoteLayout: UICollectionViewFlowLayout {
-    
+class NoteGalleryLayout: UICollectionViewFlowLayout {
     override func prepare() {
         super.prepare()
         

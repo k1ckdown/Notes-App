@@ -15,8 +15,11 @@ class NotesScreenViewController: UIViewController {
     private let headerLabel = UILabel()
     private let createNoteButton = UIButton(type: .system)
     
+    private let galleryNotesButton = UIButton(type: .system)
+    private let listNotesButton = UIButton(type: .system)
+    
     lazy private var notesCollection: UICollectionView = {
-        let layout = NoteLayout()
+        let layout = viewModel.getLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
@@ -82,7 +85,7 @@ class NotesScreenViewController: UIViewController {
         
         headerLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(80)
-            make.leading.equalToSuperview().offset(60)
+            make.leading.equalToSuperview().offset(50)
         }
     }
     
@@ -164,6 +167,10 @@ private extension NotesScreenViewController {
         
         viewModel.didUpdateHeader = { [weak self] header in
             self?.headerLabel.text = header
+        }
+        
+        viewModel.didUpdateNoteLayout = { [weak self] layout in
+            self?.notesCollection.collectionViewLayout = layout
         }
         
         viewModel.showReceivedError = { [weak self] errorDescription in

@@ -15,11 +15,13 @@ final class NotesScreenViewModel {
     var didGoToNextScreen: ((UIViewController) -> Void)?
     var didUpdateCollection: (() -> Void)?
     var didUpdateHeader: ((String) -> Void)?
+    var didUpdateNoteLayout: ((UICollectionViewFlowLayout) -> Void)?
     var showReceivedError: ((String) -> Void)?
     
     var cellViewModels: [NoteViewCellViewModel] = []
     
     // MARK: - Private properties
+    private var noteLayoutType = NoteLayoutType.gallery
     
     private var notes: [Note] = [] {
         didSet {
@@ -45,6 +47,10 @@ final class NotesScreenViewModel {
     func editNote(at index: Int) {
         let note = notes[index]
         goToEditNote(note)
+    }
+    
+    func getLayout() -> UICollectionViewFlowLayout {
+        return noteLayoutType.layout
     }
     
     func updateHeader() {
