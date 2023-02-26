@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/semdev/studyingIOS/project_IOS/Notes-App/Notes-App.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

@@ -95,6 +95,14 @@
 			path = "Notes-App";
 			sourceTree = "<group>";
 		};
+		494A065029AB1BD50037FDA5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				49CF06662998D14600D04086 /* NoteService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		49AA7DE5299538C3007CD80F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -167,6 +175,7 @@
 			children = (
 				49E9AEF92996C3BC00EC28F3 /* Notes.xcdatamodeld */,
 				49E9AEFD2996C4A900EC28F3 /* Managers */,
+				494A065029AB1BD50037FDA5 /* Services */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -175,7 +184,6 @@
 			isa = PBXGroup;
 			children = (
 				49E9AEFE2996C4C400EC28F3 /* CoreDataManager.swift */,
-				49CF06662998D14600D04086 /* NoteService.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";

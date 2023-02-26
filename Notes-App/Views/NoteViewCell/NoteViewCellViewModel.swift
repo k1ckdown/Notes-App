@@ -29,4 +29,12 @@ final class NoteViewCellViewModel {
             self.dateModified = ""
         }
     }
+    
+    // MARK: - Public methods
+    
+    func updateData(titleNote: String?, textNote: String?, dateModified: String?) {
+        self.titleNote = titleNote ?? ""
+        self.textNote = textNote ?? ""
+        self.dateModified = dateModified ?? ""
+    }
 }

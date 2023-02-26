@@ -18,8 +18,15 @@ class NotesScreenViewController: UIViewController {
     private let listNotesButton = UIButton(type: .system)
     private let galleryNotesButton = UIButton(type: .system)
     
+    lazy private var deleteNoteAlert: UIAlertController = {
+        let alertController = UIAlertController(title: viewModel.titleDeleteAlert,
+                                                message: viewModel.messageDeleteAlert,
+                                                preferredStyle: .alert)
+        return alertController
+    }()
+    
     lazy private var notesCollection: UICollectionView = {
-        let layout = viewModel.getLayout()
+        let layout = viewModel.noteLayoutType.layout
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
@@ -72,6 +79,13 @@ class NotesScreenViewController: UIViewController {
     private func handleGalleryNotesButton() {
         viewModel.setGalleryLayout()
     }
+
+    @objc
+    private func handleDelete(_ gesture: UISwipeGestureRecognizer) {
+        let location = gesture.location(in: notesCollection)
+        let indexPath = notesCollection.indexPathForItem(at: location)
+        viewModel.swipeNote(with: indexPath)
+    }
     
     //  MARK: - Setup
     
@@ -82,6 +96,7 @@ class NotesScreenViewController: UIViewController {
         setupGalleryNotesButton()
         setupNotesCollection()
         setupCreateNoteButton()
+        setupDeleteSwipeGesture()
     }
     
     private func setupSuperView() {
@@ -159,6 +174,12 @@ class NotesScreenViewController: UIViewController {
         }
     }
     
+    func setupDeleteSwipeGesture() {
+        let deleteSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleDelete))
+        deleteSwipeGesture.direction = .left
+        notesCollection.addGestureRecognizer(deleteSwipeGesture)
+    }
+    
     private func setupBackBarButtonItem() {
         let backBarButtonItem = UIBarButtonItem(title: "Notes", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = .appColor
@@ -181,6 +202,7 @@ extension NotesScreenViewController: UICollectionViewDataSource {
         cell.configure(with: viewModel.cellViewModels[indexPath.item])
         return cell
     }
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -207,15 +229,42 @@ private extension NotesScreenViewController {
             self?.headerLabel.text = header
         }
         
-        viewModel.didUpdateNoteLayout = { [weak self] layout in
+        viewModel.didUpdateNoteLayout = { [weak self] noteLayout in
             UIView.animate(withDuration: 0.5) {
-                self?.notesCollection.collectionViewLayout = layout
+                self?.notesCollection.collectionViewLayout = noteLayout.layout
             }
         }
         
         viewModel.showReceivedError = { [weak self] errorDescription in
             let alertController = UIAlertController(title: "Error", message: errorDescription, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(alertController, animated: true)
+        }
+        
+        viewModel.showAnimationSwipeCell = { [weak self] indexPath in
+            UIView.animateKeyframes(withDuration: 0.5, delay: 0) {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+                    self?.notesCollection.cellForItem(at: indexPath)?.frame.origin.x -= 30
+                }
+                UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.5) {
+                    self?.notesCollection.cellForItem(at: indexPath)?.frame.origin.x += 30
+                }
+            }
+        }
+        
+        viewModel.showDeleteNoteAlert = { [weak self] indexPath in
+            let alertController = UIAlertController(title: "Delete a note", message: "Are you sure you want to delete note?", preferredStyle: .alert)
+            alertController.overrideUserInterfaceStyle = .dark
+            
+            let deleteNoteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+                self?.notesCollection.deleteItems(at: [indexPath])
+//                self?.notesCollection.reloadData()
+            }
+            let closeAlertAction = UIAlertAction(title: "Cancel", style: .default)
+            
+            alertController.addAction(deleteNoteAction)
+            alertController.addAction(closeAlertAction)
+            
             self?.present(alertController, animated: true)
         }
     }
