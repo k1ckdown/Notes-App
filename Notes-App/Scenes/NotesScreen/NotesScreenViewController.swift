@@ -17,14 +17,7 @@ class NotesScreenViewController: UIViewController {
     
     private let listNotesButton = UIButton(type: .system)
     private let galleryNotesButton = UIButton(type: .system)
-    
-    lazy private var deleteNoteAlert: UIAlertController = {
-        let alertController = UIAlertController(title: viewModel.titleDeleteAlert,
-                                                message: viewModel.messageDeleteAlert,
-                                                preferredStyle: .alert)
-        return alertController
-    }()
-    
+
     lazy private var notesCollection: UICollectionView = {
         let layout = viewModel.noteLayoutType.layout
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -81,10 +74,17 @@ class NotesScreenViewController: UIViewController {
     }
 
     @objc
-    private func handleDelete(_ gesture: UISwipeGestureRecognizer) {
+    private func handleDeleteSwipe(_ gesture: UISwipeGestureRecognizer) {
         let location = gesture.location(in: notesCollection)
         let indexPath = notesCollection.indexPathForItem(at: location)
         viewModel.swipeNote(with: indexPath)
+    }
+    
+    // MARK: - Private methods
+    
+    private func deleteNoteOnHomeScreen(_ indexPath: IndexPath) {
+        viewModel.deleteItemFromArray(with: indexPath.item)
+        notesCollection.deleteItems(at: [indexPath])
     }
     
     //  MARK: - Setup
@@ -174,8 +174,8 @@ class NotesScreenViewController: UIViewController {
         }
     }
     
-    func setupDeleteSwipeGesture() {
-        let deleteSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleDelete))
+    private func setupDeleteSwipeGesture() {
+        let deleteSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleDeleteSwipe))
         deleteSwipeGesture.direction = .left
         notesCollection.addGestureRecognizer(deleteSwipeGesture)
     }
@@ -202,7 +202,6 @@ extension NotesScreenViewController: UICollectionViewDataSource {
         cell.configure(with: viewModel.cellViewModels[indexPath.item])
         return cell
     }
-    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -252,19 +251,18 @@ private extension NotesScreenViewController {
             }
         }
         
-        viewModel.showDeleteNoteAlert = { [weak self] indexPath in
-            let alertController = UIAlertController(title: "Delete a note", message: "Are you sure you want to delete note?", preferredStyle: .alert)
+        viewModel.showDeleteNoteAlert = { [weak self] title, message, indexPath in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
             alertController.overrideUserInterfaceStyle = .dark
-            
-            let deleteNoteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-                self?.notesCollection.deleteItems(at: [indexPath])
-//                self?.notesCollection.reloadData()
+
+            let deleteNoteAction = UIAlertAction(title: "Delete", style: .destructive) {_ in
+                self?.deleteNoteOnHomeScreen(indexPath)
             }
             let closeAlertAction = UIAlertAction(title: "Cancel", style: .default)
-            
+
             alertController.addAction(deleteNoteAction)
             alertController.addAction(closeAlertAction)
-            
+
             self?.present(alertController, animated: true)
         }
     }

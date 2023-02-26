@@ -15,19 +15,21 @@ final class NotesScreenViewModel {
     var didUpdateCollection: (() -> Void)?
     var didUpdateHeader: ((String) -> Void)?
     var didUpdateNoteLayout: ((NoteLayoutType) -> Void)?
-    var didGoToNextScreen: ((UIViewController) -> Void)?
-    var showDeleteNoteAlert: ((IndexPath) -> Void)?
-    var showAnimationSwipeCell: ((IndexPath) -> Void)?
+
     var showReceivedError: ((String) -> Void)?
+    var showAnimationSwipeCell: ((IndexPath) -> Void)?
+    var showDeleteNoteAlert: ((String, String, IndexPath) -> Void)?
+    
+    var didGoToNextScreen: ((UIViewController) -> Void)?
     
     var cellViewModels: [NoteViewCellViewModel] = []
     
     // MARK: - Private properties
     
-    private(set) var noteLayoutType = NoteLayoutType.gallery
+    private(set) var noteLayoutType = NoteLayoutType.list
     
-    private(set) var titleDeleteAlert = "Delete a note"
-    private(set) var messageDeleteAlert = "Are you sure you want to delete note?"
+    private let titleDeleteAlert = "Delete a note"
+    private let messageDeleteAlert = "Are you sure you want to delete note?"
     
     private var notes: [Note] = [] {
         didSet {
@@ -46,10 +48,6 @@ final class NotesScreenViewModel {
     
     // MARK: - Public methods
     
-    func deleteItemFromArray(with index: Int) {
-        notes.remove(at: index)
-    }
-    
     func createNote() {
         goToEditNote(nil)
     }
@@ -57,6 +55,10 @@ final class NotesScreenViewModel {
     func editNote(at index: Int) {
         let note = notes[index]
         goToEditNote(note)
+    }
+    
+    func deleteItemFromArray(with index: Int) {
+        notes.remove(at: index)
     }
     
     func setListLayout() {
@@ -79,7 +81,7 @@ final class NotesScreenViewModel {
         guard let indexPath = indexPath else { return }
         
         showAnimationSwipeCell?(indexPath)
-        showDeleteNoteAlert?(indexPath)
+        showDeleteNoteAlert?(titleDeleteAlert, messageDeleteAlert, indexPath)
     }
     
     // MARK: - Private methods

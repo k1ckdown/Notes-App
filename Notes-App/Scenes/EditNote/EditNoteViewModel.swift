@@ -19,9 +19,9 @@ final class EditNoteViewModel {
     
     // MARK: - Public properties
     
-    var showContentPlaceholder: ((String) -> Void)?
-    var hideContentPlaceholder: (() -> Void)?
     var showKeyboard: (() -> Void)?
+    var hideContentPlaceholder: (() -> Void)?
+    var showContentPlaceholder: ((String) -> Void)?
     
     weak var delegate: EditNoteViewModelDelegate?
     
