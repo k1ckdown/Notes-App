@@ -59,6 +59,7 @@ final class NotesScreenViewModel {
     
     func deleteItemFromArray(with index: Int) {
         notes.remove(at: index)
+        updateHeader()
     }
     
     func setListLayout() {

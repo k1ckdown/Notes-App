@@ -65,11 +65,15 @@ class NotesScreenViewController: UIViewController {
     
     @objc
     private func handleListNotesButton() {
+        listNotesButton.tintColor = .selectedLayoutButton
+        galleryNotesButton.tintColor = .layoutButton
         viewModel.setListLayout()
     }
     
     @objc
     private func handleGalleryNotesButton() {
+        galleryNotesButton.tintColor = .selectedLayoutButton
+        listNotesButton.tintColor = .layoutButton
         viewModel.setGalleryLayout()
     }
 
@@ -120,7 +124,7 @@ class NotesScreenViewController: UIViewController {
         view.addSubview(listNotesButton)
         
         listNotesButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-        listNotesButton.tintColor = .layoutButton
+        listNotesButton.tintColor = .selectedLayoutButton
         listNotesButton.addTarget(self, action: #selector(handleListNotesButton), for: .touchUpInside)
         
         listNotesButton.snp.makeConstraints { make in
