@@ -18,4 +18,5 @@ extension UIColor {
     static let previewTitle = UIColor.white
     static let previewText = #colorLiteral(red: 0.7559766769, green: 0.7609490156, blue: 0.7651658654, alpha: 1)
     static let deleteBarButton = UIColor.red
+    static let hideKeyboardButtonButton = #colorLiteral(red: 0.1098036841, green: 0.1098041013, blue: 0.1183908954, alpha: 1)
 }

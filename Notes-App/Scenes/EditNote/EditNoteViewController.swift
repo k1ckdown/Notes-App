@@ -14,6 +14,9 @@ class EditNoteViewController: UIViewController {
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
     private let contentBorderView = UIView()
+    
+    private let hideKeyboardButton = UIButton()
+    private let keyboardToolbar = UIToolbar()
 
     lazy private var doneBarButton: UIBarButtonItem = {
         let barButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneBarButton))
@@ -77,25 +80,39 @@ class EditNoteViewController: UIViewController {
     }
     
     @objc
+    private func handleHideKeyboardButton() {
+        view.endEditing(true)
+    }
+    
+    @objc
     private func deleteNoteFromEditScreen() {
         viewModel.didDeleteNote()
     }
     
     @objc
-    private func keyboardWillHide(sender: NSNotification) {
+    private func keyboardWillHide(_ sender: NSNotification) {
         textNoteTextView.contentInset = .zero
         textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
+        
+        hideKeyboardButton.isHidden = true
+        hideKeyboardButton.frame.origin.y = view.bounds.height
+        hideKeyboardButton.frame.origin.x = view.bounds.width - 60
     }
     
     @objc
-    private func keyboardWillShow(sender: NSNotification) {
+    private func keyboardWillShow(_ sender: NSNotification) {
         guard let userInfo = sender.userInfo else { return }
         guard let getKeyboardRect = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
 
         let keyboardFrame = self.view.convert(getKeyboardRect, to: view.window)
+        
         textNoteTextView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
         textNoteTextView.scrollIndicatorInsets = textNoteTextView.contentInset
         textNoteTextView.scrollRangeToVisible(textNoteTextView.selectedRange)
+        
+        hideKeyboardButton.frame.origin.y = view.bounds.height - keyboardFrame.height - 50
+        hideKeyboardButton.frame.origin.x = view.bounds.width - 60
+        hideKeyboardButton.isHidden = false
     }
     
     // MARK: - Private methods
@@ -119,6 +136,7 @@ class EditNoteViewController: UIViewController {
         setupTitleNoteTextField()
         setupTextNoteTextView()
         setupContentBorderView()
+        setupHideKeyboardButton()
     }
     
     private func setupSuperView() {
@@ -128,6 +146,7 @@ class EditNoteViewController: UIViewController {
     private func setupTitleNoteTextField() {
         view.addSubview(titleNoteTextField)
         
+        titleNoteTextField.inputAccessoryView = keyboardToolbar
         titleNoteTextField.text = viewModel.getTitle()
         titleNoteTextField.textColor = .white
         titleNoteTextField.tintColor = .appColor
@@ -151,6 +170,7 @@ class EditNoteViewController: UIViewController {
     private func setupTextNoteTextView() {
         view.addSubview(textNoteTextView)
         
+        textNoteTextView.inputAccessoryView = keyboardToolbar
         textNoteTextView.text = viewModel.getText()
         textNoteTextView.tintColor = .appColor
         textNoteTextView.font = UIFont.systemFont(ofSize: 18)
@@ -161,8 +181,8 @@ class EditNoteViewController: UIViewController {
         textNoteTextView.keyboardDismissMode = .onDrag
         textNoteTextView.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         textNoteTextView.snp.makeConstraints { make in
             make.top.equalTo(titleNoteTextField.snp.bottom).offset(13)
@@ -182,6 +202,19 @@ class EditNoteViewController: UIViewController {
             make.height.equalTo(150)
             make.width.equalTo(3)
         }
+    }
+    
+    private func setupHideKeyboardButton() {
+        view.addSubview(hideKeyboardButton)
+        
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
+        hideKeyboardButton.setImage(UIImage(systemName: "keyboard.chevron.compact.down", withConfiguration: config), for: .normal)
+        hideKeyboardButton.frame = CGRect(x: view.bounds.width - 60, y: view.bounds.height, width: 50, height: 30)
+        hideKeyboardButton.tintColor = .appColor
+        hideKeyboardButton.backgroundColor = .hideKeyboardButtonButton
+        hideKeyboardButton.layer.cornerRadius = 10
+        hideKeyboardButton.isHidden = true
+        hideKeyboardButton.addTarget(self, action: #selector(handleHideKeyboardButton), for: .touchUpInside)
     }
 }
 
