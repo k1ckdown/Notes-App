@@ -14,6 +14,18 @@ class EditNoteViewController: UIViewController {
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
     private let contentBorderView = UIView()
+
+    lazy private var doneBarButton: UIBarButtonItem = {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneBarButton))
+        barButton.tintColor = .appColor
+        return barButton
+    }()
+    
+    lazy private var deleteBarButton: UIBarButtonItem = {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNoteFromEditScreen))
+        barButton.tintColor = .deleteBarButton
+        return barButton
+    }()
     
     private let viewModel: EditNoteViewModel
     
@@ -32,6 +44,7 @@ class EditNoteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.rightBarButtonItem = deleteBarButton
         
         setup()
         bindToViewModel()
@@ -59,8 +72,13 @@ class EditNoteViewController: UIViewController {
     // MARK: - Actions
     
     @objc
-    private func handleDoneButton() {
+    private func handleDoneBarButton() {
         view.endEditing(true)
+    }
+    
+    @objc
+    private func deleteNoteFromEditScreen() {
+        viewModel.didDeleteNote()
     }
     
     @objc
@@ -86,21 +104,18 @@ class EditNoteViewController: UIViewController {
         viewModel.shouldSaveNote(with: titleNoteTextField.text, and: textNoteTextView.text)
     }
     
-    private func showDoneButton() {
-        self.navigationItem.rightBarButtonItem?.isEnabled = true
-        self.navigationItem.rightBarButtonItem?.tintColor = .appColor
+    private func showDoneBarButton() {
+        self.navigationItem.rightBarButtonItem = doneBarButton
     }
     
-    private func hideDoneButton() {
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
-        self.navigationItem.rightBarButtonItem?.tintColor = .clear
+    private func showDeleteBarButton() {
+        self.navigationItem.rightBarButtonItem = deleteBarButton
     }
     
     //  MARK: - Setup
     
     private func setup() {
         setupSuperView()
-        setupDoneButton()
         setupTitleNoteTextField()
         setupTextNoteTextView()
         setupContentBorderView()
@@ -108,12 +123,6 @@ class EditNoteViewController: UIViewController {
     
     private func setupSuperView() {
         view.backgroundColor = .backgroundApp
-    }
-    
-    private func setupDoneButton() {
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneButton))
-        self.navigationItem.rightBarButtonItem = doneButton
-        hideDoneButton()
     }
     
     private func setupTitleNoteTextField() {
@@ -180,11 +189,11 @@ class EditNoteViewController: UIViewController {
 
 extension EditNoteViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        showDoneButton()
+        showDoneBarButton()
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        hideDoneButton()
+        showDeleteBarButton()
         endEditingOfNote()
     }
     
@@ -199,13 +208,13 @@ extension EditNoteViewController: UITextFieldDelegate {
 extension EditNoteViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         viewModel.shouldShowContentPlaceholder(content: textView.text)
-        showDoneButton()
+        showDoneBarButton()
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
         viewModel.shouldShowContentPlaceholder(content: textView.text)
         endEditingOfNote()
-        hideDoneButton()
+        showDeleteBarButton()
     }
 }
 
@@ -213,6 +222,10 @@ extension EditNoteViewController: UITextViewDelegate {
 
 private extension EditNoteViewController {
     private func bindToViewModel() {
+        viewModel.didGoBackHomeScreen = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        
         viewModel.showKeyboard = { [weak self] in
             self?.titleNoteTextField.becomeFirstResponder()
         }

@@ -86,7 +86,7 @@ class NotesScreenViewController: UIViewController {
     
     // MARK: - Private methods
     
-    private func deleteNoteOnHomeScreen(_ indexPath: IndexPath) {
+    private func deleteNoteFromHomeScreen(_ indexPath: IndexPath) {
         viewModel.deleteItemFromArray(with: indexPath.item)
         notesCollection.deleteItems(at: [indexPath])
     }
@@ -260,7 +260,7 @@ private extension NotesScreenViewController {
             alertController.overrideUserInterfaceStyle = .dark
 
             let deleteNoteAction = UIAlertAction(title: "Delete", style: .destructive) {_ in
-                self?.deleteNoteOnHomeScreen(indexPath)
+                self?.deleteNoteFromHomeScreen(indexPath)
             }
             let closeAlertAction = UIAlertAction(title: "Cancel", style: .default)
 

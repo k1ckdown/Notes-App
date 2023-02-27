@@ -22,6 +22,7 @@ final class EditNoteViewModel {
     var showKeyboard: (() -> Void)?
     var hideContentPlaceholder: (() -> Void)?
     var showContentPlaceholder: ((String) -> Void)?
+    var didGoBackHomeScreen: (() -> Void)?
     
     weak var delegate: EditNoteViewModelDelegate?
     
@@ -37,6 +38,11 @@ final class EditNoteViewModel {
     }
     
     // MARK: - Public methods
+    
+    func didDeleteNote() {
+        deleteNote(note: note)
+        didGoBackHomeScreen?()
+    }
     
     func shouldShowKeyboard() {
         if note == nil {
