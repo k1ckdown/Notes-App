@@ -53,6 +53,9 @@ final class NoteViewCell: UICollectionViewCell {
     
     private func setupSuperView() {
         backgroundColor = .backgroundNote
+        layer.masksToBounds = true
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.borderNote.cgColor
         layer.cornerRadius = 10
         clipsToBounds = true
     }
@@ -124,7 +127,7 @@ final class NoteViewCell: UICollectionViewCell {
         separatorView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(titleNoteLabel)
             make.bottom.equalTo(dateCreatedNoteLabel.snp.top).offset(-5)
-            make.height.equalTo(2)
+            make.height.equalTo(1)
         }
     }
 }

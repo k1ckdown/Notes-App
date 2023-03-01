@@ -12,8 +12,8 @@ final class NotesScreenViewModel {
     
     // MARK: - Public properties
     
-    var didUpdateCollection: (() -> Void)?
     var didUpdateHeader: ((String) -> Void)?
+    var didUpdateCollection: (() -> Void)?
     var didUpdateNoteLayout: ((NoteLayoutType) -> Void)?
     
     var didSwipeCell: ((IndexPath) -> Void)?
@@ -21,16 +21,20 @@ final class NotesScreenViewModel {
     var didGoToNextScreen: ((UIViewController) -> Void)?
 
     var hideToolbar: (() -> Void)?
+    var showToolBar: (() -> Void)?
+    
     var showReceivedError: ((String) -> Void)?
     var showDeleteNoteAlert: ((String, String) -> Void)?
+    
+    var showAppearanceSelectedCell: ((IndexPath) -> Void)?
+    var hideAppearanceSelectedCell: ((IndexPath) -> Void)?
     
     var cellViewModels: [NoteViewCellViewModel] = []
     
     // MARK: - Private properties
     
-    private(set) var noteLayoutType = NoteLayoutType.list
-    
     private var indexPathSelectedNote: IndexPath?
+    private(set) var noteLayoutType = NoteLayoutType.list
     
     private var notes: [Note] = [] {
         didSet {
@@ -49,21 +53,6 @@ final class NotesScreenViewModel {
     
     // MARK: - Public methods
     
-    func createNote() {
-        goToEditNote(nil)
-    }
-    
-    func editNote(at index: Int) {
-        guard indexPathSelectedNote == nil else {
-            indexPathSelectedNote = nil
-            hideToolbar?()
-            return
-        }
-        
-        let note = notes[index]
-        goToEditNote(note)
-    }
-    
     func setListLayout() {
         noteLayoutType = .list
         didUpdateNoteLayout?(noteLayoutType)
@@ -80,11 +69,19 @@ final class NotesScreenViewModel {
         didUpdateHeader?(headerText)
     }
     
-    func swipeNote(with indexPath: IndexPath?) {
-        guard let indexPath = indexPath else { return }
-        
-        indexPathSelectedNote = indexPath
-        didSwipeCell?(indexPath)
+    func createNote() {
+        goToEditNote(nil)
+    }
+    
+    func editNote(at index: Int) {
+        if let indexPathSelectedNote = indexPathSelectedNote {
+            self.indexPathSelectedNote = nil
+            hideToolbar?()
+            hideAppearanceSelectedCell?(indexPathSelectedNote)
+        } else {
+            let note = notes[index]
+            goToEditNote(note)
+        }
     }
     
     func shouldDeleteNote() {
@@ -96,11 +93,37 @@ final class NotesScreenViewModel {
         
         notes.remove(at: indexPathSelectedNote.item)
         updateHeader()
+        hideToolbar?()
         self.indexPathSelectedNote = nil
         didDeleteCollectionItems?([indexPathSelectedNote])
     }
     
+    func swipeNote(with indexPath: IndexPath?) {
+        guard let indexPath = indexPath else { return }
+        
+        if let indexPathSelectedNote = indexPathSelectedNote {
+            hideAppearanceSelectedCell?(indexPathSelectedNote)
+
+            if indexPath == indexPathSelectedNote {
+                self.indexPathSelectedNote = nil
+                hideToolbar?()
+            } else {
+                selectNewNote(with: indexPath)
+            }
+        } else {
+            selectNewNote(with: indexPath)
+        }
+        
+        didSwipeCell?(indexPath)
+    }
+    
     // MARK: - Private methods
+    
+    private func selectNewNote(with indexPath: IndexPath) {
+        indexPathSelectedNote = indexPath
+        showAppearanceSelectedCell?(indexPath)
+        showToolBar?()
+    }
     
     private func indexForNote(id: ObjectIdentifier) -> Int {
         guard let index = notes.firstIndex(where: { $0.id == id }) else { return 0 }

@@ -285,25 +285,42 @@ extension NotesScreenViewController: UICollectionViewDelegate {
 
 private extension NotesScreenViewController {
     private func bindToViewModel() {
-        viewModel.didGoToNextScreen = { [weak self] viewController in
-            self?.navigationController?.pushViewController(viewController, animated: true)
+        viewModel.didUpdateHeader = { [weak self] header in
+            self?.headerLabel.text = header
         }
         
         viewModel.didUpdateCollection = { [weak self] in
             self?.notesCollection.reloadData()
         }
         
-        viewModel.didUpdateHeader = { [weak self] header in
-            self?.headerLabel.text = header
+        viewModel.didSwipeCell = { [weak self] indexPath in
+            self?.animateCollectionCell(with: indexPath)
         }
         
         viewModel.didDeleteCollectionItems = { [weak self] indexes in
             self?.notesCollection.deleteItems(at: indexes)
         }
         
+        viewModel.didGoToNextScreen = { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        viewModel.showAppearanceSelectedCell = { [weak self] indexPath in
+            self?.notesCollection.cellForItem(at: indexPath)?.layer.borderColor = UIColor.borderSelectedNote.cgColor
+        }
+        
+        viewModel.hideAppearanceSelectedCell = { [weak self] indexPath in
+            self?.notesCollection.cellForItem(at: indexPath)?.layer.borderColor = UIColor.borderNote.cgColor
+        }
+        
         viewModel.hideToolbar = { [weak self] in
             self?.optionsMenuToolbar.isHidden = true
             self?.createNoteButton.isHidden = false
+        }
+        
+        viewModel.showToolBar = { [weak self] in
+            self?.optionsMenuToolbar.isHidden = false
+            self?.createNoteButton.isHidden = true
         }
         
         viewModel.didUpdateNoteLayout = { [weak self] noteLayout in
@@ -318,20 +335,12 @@ private extension NotesScreenViewController {
             self?.present(alertController, animated: true)
         }
         
-        viewModel.didSwipeCell = { [weak self] indexPath in
-            self?.optionsMenuToolbar.isHidden = !(self?.optionsMenuToolbar.isHidden ?? true)
-            self?.createNoteButton.isHidden = !(self?.createNoteButton.isHidden ?? false)
-            self?.animateCollectionCell(with: indexPath)
-        }
-        
         viewModel.showDeleteNoteAlert = { [weak self] title, message in
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             alertController.overrideUserInterfaceStyle = .dark
 
             let deleteNoteAction = UIAlertAction(title: "Delete Note", style: .destructive) {_ in
                 self?.deleteNote()
-                self?.optionsMenuToolbar.isHidden = true
-                self?.createNoteButton.isHidden = false
             }
             let closeAlertAction = UIAlertAction(title: "Cancel", style: .cancel)
 
