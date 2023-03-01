@@ -34,7 +34,7 @@ final class NotesScreenViewModel {
     // MARK: - Private properties
     
     private var indexPathSelectedNote: IndexPath?
-    private(set) var noteLayoutType = NoteLayoutType.list
+    private(set) var noteLayoutType = NoteLayoutType.gallery
     
     private var notes: [Note] = [] {
         didSet {
@@ -91,7 +91,10 @@ final class NotesScreenViewModel {
     func deleteNoteFromHomeScreen() {
         guard let indexPathSelectedNote = indexPathSelectedNote else { return }
         
+        let note = notes[indexPathSelectedNote.item]
         notes.remove(at: indexPathSelectedNote.item)
+        deleteNote(note: note)
+        
         updateHeader()
         hideToolbar?()
         self.indexPathSelectedNote = nil
@@ -151,6 +154,17 @@ final class NotesScreenViewModel {
         didGoToNextScreen?(viewController)
     }
     
+    private func deleteNote(note: Note) {
+        NoteService.shared.deleteNote(note) { result in
+            switch result {
+            case .success():
+                return
+            case .failure(let error):
+                showReceivedError?(error.errorDescription)
+            }
+        }
+    }
+    
     private func getNotes() {
         NoteService.shared.fetchNotes { result in
             switch result {
@@ -184,7 +198,7 @@ extension NotesScreenViewModel: EditNoteViewModelDelegate {
         didUpdateCollection?()
     }
     
-    func deleteNote(with id: ObjectIdentifier) {
+    func deleteNoteFromCollection(with id: ObjectIdentifier) {
         let index = indexForNote(id: id)
         notes.remove(at: index)
         updateHeader()

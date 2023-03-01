@@ -206,8 +206,8 @@ class EditNoteViewController: UIViewController {
         let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
         hideKeyboardButton.setImage(UIImage(systemName: "keyboard.chevron.compact.down", withConfiguration: config), for: .normal)
         hideKeyboardButton.frame = CGRect(x: view.bounds.width - 60, y: view.bounds.height, width: 50, height: 30)
-        hideKeyboardButton.tintColor = .appColor
-        hideKeyboardButton.backgroundColor = .hideKeyboardButtonButton
+        hideKeyboardButton.tintColor = .hideKeyboardButtonButton
+        hideKeyboardButton.backgroundColor = .appColor
         hideKeyboardButton.layer.cornerRadius = 10
         hideKeyboardButton.isHidden = true
         hideKeyboardButton.addTarget(self, action: #selector(handleHideKeyboardButton), for: .touchUpInside)

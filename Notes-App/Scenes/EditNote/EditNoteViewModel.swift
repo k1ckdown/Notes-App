@@ -11,7 +11,7 @@ import UIKit
 protocol EditNoteViewModelDelegate: AnyObject {
     func addNewNoteInCollection(note: Note)
     func updateNoteInCollection(with id: ObjectIdentifier)
-    func deleteNote(with id: ObjectIdentifier)
+    func deleteNoteFromCollection(with id: ObjectIdentifier)
     func showError(desc: String)
 }
 
@@ -41,7 +41,7 @@ final class EditNoteViewModel {
     // MARK: - Public methods
     
     func didDeleteNote() {
-        deleteNote(note: note)
+        deleteNoteFromEditScreen(note: note)
         didGoBackHomeScreen?()
     }
     
@@ -63,7 +63,7 @@ final class EditNoteViewModel {
         guard let title = title, let text = text else { return }
         
         if title.isBlank && (text.isBlank || text == contentPlaceholder) {
-            deleteNote(note: note)
+            deleteNoteFromEditScreen(note: note)
         }
     }
     
@@ -90,10 +90,10 @@ final class EditNoteViewModel {
     
     // MARK: - Private methods
     
-    private func deleteNote(note: Note?) {
+    private func deleteNoteFromEditScreen(note: Note?) {
         guard let note = note else { return }
         
-        delegate?.deleteNote(with: note.id)
+        delegate?.deleteNoteFromCollection(with: note.id)
         NoteService.shared.deleteNote(note) { result in
             switch result {
             case .success():

@@ -202,8 +202,8 @@ class NotesScreenViewController: UIViewController {
     private func setupOptionsMenuToolbar() {
         view.addSubview(optionsMenuToolbar)
         
-        let width = view.bounds.width * 0.6
-        let height: CGFloat = 48
+        let width = view.bounds.width * 0.4
+        let height: CGFloat = 50
         
         optionsMenuToolbar.frame.size.width = width
         optionsMenuToolbar.frame.size.height = height
@@ -233,7 +233,7 @@ class NotesScreenViewController: UIViewController {
     private func setupDeleteNoteImageView() -> UIImageView {
         let imageView = UIImageView()
         
-        imageView.image = UIImage(systemName: "trash")
+        imageView.image = UIImage(systemName: "trash.fill")
         imageView.tintColor = .systemRed
         
         return imageView
@@ -244,7 +244,7 @@ class NotesScreenViewController: UIViewController {
         
         label.text = "Delete"
         label.textColor = .systemRed
-        label.font = UIFont.systemFont(ofSize: 17)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         
         return label
     }
@@ -313,14 +313,14 @@ private extension NotesScreenViewController {
             self?.notesCollection.cellForItem(at: indexPath)?.layer.borderColor = UIColor.borderNote.cgColor
         }
         
-        viewModel.hideToolbar = { [weak self] in
-            self?.optionsMenuToolbar.isHidden = true
-            self?.createNoteButton.isHidden = false
-        }
-        
         viewModel.showToolBar = { [weak self] in
             self?.optionsMenuToolbar.isHidden = false
             self?.createNoteButton.isHidden = true
+        }
+        
+        viewModel.hideToolbar = { [weak self] in
+            self?.optionsMenuToolbar.isHidden = true
+            self?.createNoteButton.isHidden = false
         }
         
         viewModel.didUpdateNoteLayout = { [weak self] noteLayout in
