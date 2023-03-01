@@ -88,7 +88,6 @@ class NotesScreenViewController: UIViewController {
     
     @objc
     private func handleDeleteNoteFromToolbar() {
-        optionsMenuToolbar.isHidden = true
         viewModel.shouldDeleteNote()
     }
     
@@ -96,6 +95,17 @@ class NotesScreenViewController: UIViewController {
     
     private func deleteNote() {
         viewModel.deleteNoteFromHomeScreen()
+    }
+    
+    private func animateCollectionCell(with indexPath: IndexPath) {
+        UIView.animateKeyframes(withDuration: 0.5, delay: 0) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+                self.notesCollection.cellForItem(at: indexPath)?.frame.origin.x -= 30
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.5) {
+                self.notesCollection.cellForItem(at: indexPath)?.frame.origin.x += 30
+            }
+        }
     }
     
     //  MARK: - Setup
@@ -291,6 +301,11 @@ private extension NotesScreenViewController {
             self?.notesCollection.deleteItems(at: indexes)
         }
         
+        viewModel.hideToolbar = { [weak self] in
+            self?.optionsMenuToolbar.isHidden = true
+            self?.createNoteButton.isHidden = false
+        }
+        
         viewModel.didUpdateNoteLayout = { [weak self] noteLayout in
             UIView.animate(withDuration: 0.5) {
                 self?.notesCollection.collectionViewLayout = noteLayout.layout
@@ -306,15 +321,7 @@ private extension NotesScreenViewController {
         viewModel.didSwipeCell = { [weak self] indexPath in
             self?.optionsMenuToolbar.isHidden = !(self?.optionsMenuToolbar.isHidden ?? true)
             self?.createNoteButton.isHidden = !(self?.createNoteButton.isHidden ?? false)
-            
-            UIView.animateKeyframes(withDuration: 0.5, delay: 0) {
-                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
-                    self?.notesCollection.cellForItem(at: indexPath)?.frame.origin.x -= 30
-                }
-                UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.5) {
-                    self?.notesCollection.cellForItem(at: indexPath)?.frame.origin.x += 30
-                }
-            }
+            self?.animateCollectionCell(with: indexPath)
         }
         
         viewModel.showDeleteNoteAlert = { [weak self] title, message in
@@ -323,11 +330,10 @@ private extension NotesScreenViewController {
 
             let deleteNoteAction = UIAlertAction(title: "Delete Note", style: .destructive) {_ in
                 self?.deleteNote()
+                self?.optionsMenuToolbar.isHidden = true
                 self?.createNoteButton.isHidden = false
             }
-            let closeAlertAction = UIAlertAction(title: "Cancel", style: .cancel) {_ in
-                self?.createNoteButton.isHidden = false
-            }
+            let closeAlertAction = UIAlertAction(title: "Cancel", style: .cancel)
 
             alertController.addAction(deleteNoteAction)
             alertController.addAction(closeAlertAction)

@@ -20,6 +20,7 @@ final class NotesScreenViewModel {
     var didDeleteCollectionItems: (([IndexPath]) -> Void)?
     var didGoToNextScreen: ((UIViewController) -> Void)?
 
+    var hideToolbar: (() -> Void)?
     var showReceivedError: ((String) -> Void)?
     var showDeleteNoteAlert: ((String, String) -> Void)?
     
@@ -53,6 +54,12 @@ final class NotesScreenViewModel {
     }
     
     func editNote(at index: Int) {
+        guard indexPathSelectedNote == nil else {
+            indexPathSelectedNote = nil
+            hideToolbar?()
+            return
+        }
+        
         let note = notes[index]
         goToEditNote(note)
     }
@@ -89,6 +96,7 @@ final class NotesScreenViewModel {
         
         notes.remove(at: indexPathSelectedNote.item)
         updateHeader()
+        self.indexPathSelectedNote = nil
         didDeleteCollectionItems?([indexPathSelectedNote])
     }
     
