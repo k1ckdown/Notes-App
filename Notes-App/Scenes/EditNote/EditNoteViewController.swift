@@ -14,9 +14,7 @@ class EditNoteViewController: UIViewController {
     private let titleNoteTextField = UITextField()
     private let textNoteTextView = UITextView()
     private let contentBorderView = UIView()
-    
     private let hideKeyboardButton = UIButton()
-    private let keyboardToolbar = UIToolbar()
 
     lazy private var doneBarButton: UIBarButtonItem = {
         let barButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDoneBarButton))
@@ -146,7 +144,6 @@ class EditNoteViewController: UIViewController {
     private func setupTitleNoteTextField() {
         view.addSubview(titleNoteTextField)
         
-        titleNoteTextField.inputAccessoryView = keyboardToolbar
         titleNoteTextField.text = viewModel.getTitle()
         titleNoteTextField.textColor = .white
         titleNoteTextField.tintColor = .appColor
@@ -170,7 +167,6 @@ class EditNoteViewController: UIViewController {
     private func setupTextNoteTextView() {
         view.addSubview(textNoteTextView)
         
-        textNoteTextView.inputAccessoryView = keyboardToolbar
         textNoteTextView.text = viewModel.getText()
         textNoteTextView.tintColor = .appColor
         textNoteTextView.font = UIFont.systemFont(ofSize: 18)
