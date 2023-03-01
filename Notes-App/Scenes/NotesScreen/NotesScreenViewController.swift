@@ -88,14 +88,14 @@ class NotesScreenViewController: UIViewController {
     
     @objc
     private func handleDeleteNoteFromToolbar() {
-        print("DELETE FROM TOOLBAR")
+        optionsMenuToolbar.isHidden = true
+        viewModel.shouldDeleteNote()
     }
     
     // MARK: - Private methods
     
-    private func deleteNoteFromHomeScreen(_ indexPath: IndexPath) {
-        viewModel.deleteItemFromArray(with: indexPath.item)
-        notesCollection.deleteItems(at: [indexPath])
+    private func deleteNote() {
+        viewModel.deleteNoteFromHomeScreen()
     }
     
     //  MARK: - Setup
@@ -107,7 +107,6 @@ class NotesScreenViewController: UIViewController {
         setupGalleryNotesButton()
         setupNotesCollection()
         setupCreateNoteButton()
-        setupDeleteSwipeGesture()
         setupOptionsMenuToolbar()
     }
     
@@ -164,6 +163,10 @@ class NotesScreenViewController: UIViewController {
         notesCollection.delegate = self
         notesCollection.register(NoteViewCell.self, forCellWithReuseIdentifier: NoteViewCell.identifier)
         
+        let deleteSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleDeleteSwipe))
+        deleteSwipeGesture.direction = .left
+        notesCollection.addGestureRecognizer(deleteSwipeGesture)
+        
         notesCollection.snp.makeConstraints { make in
             make.top.equalTo(headerLabel.snp.bottom).offset(20)
             make.leading.trailing.bottom.equalToSuperview()
@@ -198,6 +201,7 @@ class NotesScreenViewController: UIViewController {
         optionsMenuToolbar.frame.origin.y = view.bounds.height * 0.88
         optionsMenuToolbar.layer.masksToBounds = true
         optionsMenuToolbar.layer.cornerRadius = 10
+        optionsMenuToolbar.isHidden = true
         
         let flexibleSpaceBarButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let deleteBarButton = UIBarButtonItem(customView: setupDeleteNoteStackView())
@@ -233,12 +237,6 @@ class NotesScreenViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 17)
         
         return label
-    }
-    
-    private func setupDeleteSwipeGesture() {
-        let deleteSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleDeleteSwipe))
-        deleteSwipeGesture.direction = .left
-        notesCollection.addGestureRecognizer(deleteSwipeGesture)
     }
     
     private func setupBackBarButtonItem() {
@@ -289,6 +287,10 @@ private extension NotesScreenViewController {
             self?.headerLabel.text = header
         }
         
+        viewModel.didDeleteCollectionItems = { [weak self] indexes in
+            self?.notesCollection.deleteItems(at: indexes)
+        }
+        
         viewModel.didUpdateNoteLayout = { [weak self] noteLayout in
             UIView.animate(withDuration: 0.5) {
                 self?.notesCollection.collectionViewLayout = noteLayout.layout
@@ -301,7 +303,10 @@ private extension NotesScreenViewController {
             self?.present(alertController, animated: true)
         }
         
-        viewModel.showAnimationSwipeCell = { [weak self] indexPath in
+        viewModel.didSwipeCell = { [weak self] indexPath in
+            self?.optionsMenuToolbar.isHidden = !(self?.optionsMenuToolbar.isHidden ?? true)
+            self?.createNoteButton.isHidden = !(self?.createNoteButton.isHidden ?? false)
+            
             UIView.animateKeyframes(withDuration: 0.5, delay: 0) {
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                     self?.notesCollection.cellForItem(at: indexPath)?.frame.origin.x -= 30
@@ -312,14 +317,17 @@ private extension NotesScreenViewController {
             }
         }
         
-        viewModel.showDeleteNoteAlert = { [weak self] title, message, indexPath in
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        viewModel.showDeleteNoteAlert = { [weak self] title, message in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             alertController.overrideUserInterfaceStyle = .dark
 
-            let deleteNoteAction = UIAlertAction(title: "Delete", style: .destructive) {_ in
-                self?.deleteNoteFromHomeScreen(indexPath)
+            let deleteNoteAction = UIAlertAction(title: "Delete Note", style: .destructive) {_ in
+                self?.deleteNote()
+                self?.createNoteButton.isHidden = false
             }
-            let closeAlertAction = UIAlertAction(title: "Cancel", style: .default)
+            let closeAlertAction = UIAlertAction(title: "Cancel", style: .cancel) {_ in
+                self?.createNoteButton.isHidden = false
+            }
 
             alertController.addAction(deleteNoteAction)
             alertController.addAction(closeAlertAction)

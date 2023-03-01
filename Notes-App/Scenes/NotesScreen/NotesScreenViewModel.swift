@@ -15,12 +15,13 @@ final class NotesScreenViewModel {
     var didUpdateCollection: (() -> Void)?
     var didUpdateHeader: ((String) -> Void)?
     var didUpdateNoteLayout: ((NoteLayoutType) -> Void)?
+    
+    var didSwipeCell: ((IndexPath) -> Void)?
+    var didDeleteCollectionItems: (([IndexPath]) -> Void)?
+    var didGoToNextScreen: ((UIViewController) -> Void)?
 
     var showReceivedError: ((String) -> Void)?
-    var showAnimationSwipeCell: ((IndexPath) -> Void)?
-    var showDeleteNoteAlert: ((String, String, IndexPath) -> Void)?
-    
-    var didGoToNextScreen: ((UIViewController) -> Void)?
+    var showDeleteNoteAlert: ((String, String) -> Void)?
     
     var cellViewModels: [NoteViewCellViewModel] = []
     
@@ -28,8 +29,7 @@ final class NotesScreenViewModel {
     
     private(set) var noteLayoutType = NoteLayoutType.list
     
-    private let titleDeleteAlert = "Delete a note"
-    private let messageDeleteAlert = "Are you sure you want to delete note?"
+    private var indexPathSelectedNote: IndexPath?
     
     private var notes: [Note] = [] {
         didSet {
@@ -57,11 +57,6 @@ final class NotesScreenViewModel {
         goToEditNote(note)
     }
     
-    func deleteItemFromArray(with index: Int) {
-        notes.remove(at: index)
-        updateHeader()
-    }
-    
     func setListLayout() {
         noteLayoutType = .list
         didUpdateNoteLayout?(noteLayoutType)
@@ -81,8 +76,20 @@ final class NotesScreenViewModel {
     func swipeNote(with indexPath: IndexPath?) {
         guard let indexPath = indexPath else { return }
         
-        showAnimationSwipeCell?(indexPath)
-        showDeleteNoteAlert?(titleDeleteAlert, messageDeleteAlert, indexPath)
+        indexPathSelectedNote = indexPath
+        didSwipeCell?(indexPath)
+    }
+    
+    func shouldDeleteNote() {
+        showDeleteNoteAlert?("", "Selected note will be deleted")
+    }
+    
+    func deleteNoteFromHomeScreen() {
+        guard let indexPathSelectedNote = indexPathSelectedNote else { return }
+        
+        notes.remove(at: indexPathSelectedNote.item)
+        updateHeader()
+        didDeleteCollectionItems?([indexPathSelectedNote])
     }
     
     // MARK: - Private methods
