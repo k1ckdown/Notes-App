@@ -141,7 +141,7 @@ class NotesScreenViewController: UIViewController {
         view.addSubview(listNotesButton)
         
         listNotesButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-        listNotesButton.tintColor = .selectedLayoutButton
+        listNotesButton.tintColor = .layoutButton
         listNotesButton.addTarget(self, action: #selector(handleListNotesButton), for: .touchUpInside)
         
         listNotesButton.snp.makeConstraints { make in
@@ -154,7 +154,7 @@ class NotesScreenViewController: UIViewController {
         view.addSubview(galleryNotesButton)
 
         galleryNotesButton.setImage(UIImage(systemName: "square.grid.2x2"), for: .normal)
-        galleryNotesButton.tintColor = .layoutButton
+        galleryNotesButton.tintColor = .selectedLayoutButton
         galleryNotesButton.addTarget(self, action: #selector(handleGalleryNotesButton), for: .touchUpInside)
         
         galleryNotesButton.snp.makeConstraints { make in
@@ -195,7 +195,8 @@ class NotesScreenViewController: UIViewController {
         
         createNoteButton.snp.makeConstraints { make in
             make.height.width.equalTo(65)
-            make.trailing.bottom.equalToSuperview().inset(40)
+            make.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().inset(40)
         }
     }
     
