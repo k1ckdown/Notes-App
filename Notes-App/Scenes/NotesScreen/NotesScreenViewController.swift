@@ -307,11 +307,13 @@ private extension NotesScreenViewController {
         }
         
         viewModel.showAppearanceSelectedCell = { [weak self] indexPath in
-            self?.notesCollection.cellForItem(at: indexPath)?.layer.borderColor = UIColor.borderSelectedNote.cgColor
+            guard let cell = self?.notesCollection.cellForItem(at: indexPath) as? NoteViewCell else { return }
+            cell.isSwiped = true
         }
         
         viewModel.hideAppearanceSelectedCell = { [weak self] indexPath in
-            self?.notesCollection.cellForItem(at: indexPath)?.layer.borderColor = UIColor.borderNote.cgColor
+            guard let cell = self?.notesCollection.cellForItem(at: indexPath) as? NoteViewCell else { return }
+            cell.isSwiped = false
         }
         
         viewModel.showToolBar = { [weak self] in

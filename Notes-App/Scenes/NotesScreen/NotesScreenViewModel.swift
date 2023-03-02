@@ -33,7 +33,7 @@ final class NotesScreenViewModel {
     
     // MARK: - Private properties
     
-    private var indexPathSelectedNote: IndexPath?
+    private(set) var indexPathSelectedNote: IndexPath?
     private(set) var noteLayoutType = NoteLayoutType.gallery
     
     private var notes: [Note] = [] {
@@ -75,6 +75,7 @@ final class NotesScreenViewModel {
     
     func editNote(at index: Int) {
         if let indexPathSelectedNote = indexPathSelectedNote {
+            cellViewModels[indexPathSelectedNote.item].deselect()
             self.indexPathSelectedNote = nil
             hideToolbar?()
             hideAppearanceSelectedCell?(indexPathSelectedNote)
@@ -105,6 +106,7 @@ final class NotesScreenViewModel {
         guard let indexPath = indexPath else { return }
         
         if let indexPathSelectedNote = indexPathSelectedNote {
+            cellViewModels[indexPathSelectedNote.item].deselect()
             hideAppearanceSelectedCell?(indexPathSelectedNote)
 
             if indexPath == indexPathSelectedNote {
@@ -123,6 +125,7 @@ final class NotesScreenViewModel {
     // MARK: - Private methods
     
     private func selectNewNote(with indexPath: IndexPath) {
+        cellViewModels[indexPath.item].select()
         indexPathSelectedNote = indexPath
         showAppearanceSelectedCell?(indexPath)
         showToolBar?()

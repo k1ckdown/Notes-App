@@ -11,6 +11,12 @@ final class NoteViewCell: UICollectionViewCell {
     
     static let identifier = "NoteViewCell"
     
+    var isSwiped: Bool = false {
+        didSet {
+            updateAppearance()
+        }
+    }
+    
     // MARK: - Private properties
     
     private let titleNoteLabel = UILabel()
@@ -20,7 +26,7 @@ final class NoteViewCell: UICollectionViewCell {
     private let dateCreatedNoteLabel = UILabel()
     private let dateModifiedNoteLabel = UILabel()
     
-    // MARK: - Lifecycle methods
+    // MARK: - Inits
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +37,14 @@ final class NoteViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        layer.borderColor = UIColor.borderNote.cgColor
+    }
+    
     // MARK: - Configure
     
     func configure(with viewModel: NoteViewCellViewModel) {
@@ -38,6 +52,13 @@ final class NoteViewCell: UICollectionViewCell {
         textNoteLabel.text = viewModel.textNote
         dateCreatedNoteLabel.text = viewModel.dateCreated
         dateModifiedNoteLabel.text = viewModel.dateModified
+        layer.borderColor = viewModel.isSelect ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
+    }
+    
+    // MARK: - Private methods
+    
+    private func updateAppearance() {
+        layer.borderColor = isSwiped ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
     }
     
     // MARK: - Setup
@@ -55,7 +76,6 @@ final class NoteViewCell: UICollectionViewCell {
         backgroundColor = .backgroundNote
         layer.masksToBounds = true
         layer.borderWidth = 1
-        layer.borderColor = UIColor.borderNote.cgColor
         layer.cornerRadius = 10
         clipsToBounds = true
     }

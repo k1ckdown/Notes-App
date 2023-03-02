@@ -15,6 +15,7 @@ final class NoteViewCellViewModel {
     private(set) var textNote: String
     private(set) var dateCreated: String
     private(set) var dateModified: String
+    private(set) var isSelect = false
     
     // MARK: - Inits
     
@@ -36,5 +37,13 @@ final class NoteViewCellViewModel {
         self.titleNote = titleNote ?? ""
         self.textNote = textNote ?? ""
         self.dateModified = dateModified ?? ""
+    }
+    
+    func select() {
+        isSelect = true
+    }
+    
+    func deselect() {
+        isSelect = false
     }
 }
