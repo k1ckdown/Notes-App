@@ -26,7 +26,7 @@ class NoteGalleryLayout: UICollectionViewFlowLayout {
         let lineInsets = minimumInteritemSpacing * CGFloat(itemsInRow - 1) + sideInsets
         let otherSpace = collectionView.frame.width - lineInsets
         let cellWidth = otherSpace / CGFloat(itemsInRow)
-        itemSize = CGSize(width: cellWidth, height: cellWidth * 1.3)
+        itemSize = CGSize(width: cellWidth, height: cellWidth * 1.1)
     }
 }
 

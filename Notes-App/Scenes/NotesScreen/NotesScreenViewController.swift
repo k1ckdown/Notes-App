@@ -178,7 +178,7 @@ class NotesScreenViewController: UIViewController {
         notesCollection.addGestureRecognizer(deleteSwipeGesture)
         
         notesCollection.snp.makeConstraints { make in
-            make.top.equalTo(headerLabel.snp.bottom).offset(20)
+            make.top.equalTo(headerLabel.snp.bottom).offset(25)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }

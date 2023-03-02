@@ -195,8 +195,8 @@ class EditNoteViewController: UIViewController {
         
         contentBorderView.snp.makeConstraints { make in
             make.top.leading.equalTo(textNoteTextView)
-            make.height.equalTo(150)
-            make.width.equalTo(3)
+            make.height.equalTo(130)
+            make.width.equalTo(4)
         }
     }
     

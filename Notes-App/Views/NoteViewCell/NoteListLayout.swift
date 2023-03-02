@@ -21,7 +21,7 @@ class NoteListLayout: UICollectionViewFlowLayout {
         let cvHeight = collectionView.bounds.height;
         
         let cellWidth = cvWidth;
-        let cellHeight = cvHeight / 6;
+        let cellHeight = cvHeight / 5;
         
         itemSize = CGSize(width: cellWidth, height: cellHeight)
     }

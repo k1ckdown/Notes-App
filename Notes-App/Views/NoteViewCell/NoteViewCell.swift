@@ -19,8 +19,8 @@ final class NoteViewCell: UICollectionViewCell {
     
     // MARK: - Private properties
     
-    private let titleNoteLabel = UILabel()
-    private let textNoteLabel = UILabel()
+    private let previewTitleNoteLabel = UILabel()
+    private let previewTextNoteLabel = UILabel()
     
     private let separatorView = UIView()
     private let dateCreatedNoteLabel = UILabel()
@@ -45,11 +45,16 @@ final class NoteViewCell: UICollectionViewCell {
         layer.borderColor = UIColor.borderNote.cgColor
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updatNumberOfLinesText()
+    }
+    
     // MARK: - Configure
     
     func configure(with viewModel: NoteViewCellViewModel) {
-        titleNoteLabel.text = viewModel.titleNote
-        textNoteLabel.text = viewModel.textNote
+        previewTitleNoteLabel.text = viewModel.titleNote
+        previewTextNoteLabel.text = viewModel.textNote
         dateCreatedNoteLabel.text = viewModel.dateCreated
         dateModifiedNoteLabel.text = viewModel.dateModified
         layer.borderColor = viewModel.isSelect ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
@@ -61,12 +66,16 @@ final class NoteViewCell: UICollectionViewCell {
         layer.borderColor = isSwiped ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
     }
     
+    private func updatNumberOfLinesText() {
+        previewTextNoteLabel.numberOfLines = previewTextNoteLabel.frame.maxY >= frame.height * 0.9 ? 1 : 0
+    }
+    
     // MARK: - Setup
     
     private func setup() {
         setupSuperView()
-        setupTitleNoteLabel()
-        setupTextNoteLabel()
+        setupPreviewTitleNoteLabel()
+        setupPreviewTextNoteLabel()
         setupDateModifiedNoteLabel()
         setupDateCreatedNoteLabel()
         setupSeparatorView()
@@ -80,31 +89,33 @@ final class NoteViewCell: UICollectionViewCell {
         clipsToBounds = true
     }
     
-    private func setupTitleNoteLabel() {
-        addSubview(titleNoteLabel)
+    private func setupPreviewTitleNoteLabel() {
+        addSubview(previewTitleNoteLabel)
         
-        titleNoteLabel.font = UIFont.systemFont(ofSize: 25, weight: .regular)
-        titleNoteLabel.textColor = .previewTitle
-        titleNoteLabel.textAlignment = .left
+        previewTitleNoteLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
+        previewTitleNoteLabel.textColor = .previewTitle
+        previewTitleNoteLabel.textAlignment = .left
         
-        titleNoteLabel.snp.makeConstraints { make in
+        previewTitleNoteLabel.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview().inset(15)
         }
     }
     
-    private func setupTextNoteLabel() {
-        addSubview(textNoteLabel)
-
-        textNoteLabel.textColor = .previewText
-        textNoteLabel.textAlignment = .left
-        textNoteLabel.font = UIFont.systemFont(ofSize: 18)
-        textNoteLabel.sizeToFit()
-        textNoteLabel.numberOfLines = 0
-
-        textNoteLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleNoteLabel.snp.bottom).offset(3)
-            make.trailing.leading.equalTo(titleNoteLabel)
-            make.height.equalToSuperview().multipliedBy(0.63)
+    private func setupPreviewTextNoteLabel() {
+        addSubview(previewTextNoteLabel)
+        
+        previewTextNoteLabel.textColor = .previewText
+        previewTextNoteLabel.textAlignment = .left
+        previewTextNoteLabel.font = UIFont.systemFont(ofSize: 16)
+        previewTextNoteLabel.sizeToFit()
+        previewTextNoteLabel.numberOfLines = 0
+        
+        previewTextNoteLabel.frame.size.height = frame.height / 2
+        
+        previewTextNoteLabel.snp.makeConstraints { make in
+            make.top.equalTo(previewTitleNoteLabel.snp.bottom).offset(2)
+            make.trailing.leading.equalTo(previewTitleNoteLabel)
+            make.height.equalToSuperview().multipliedBy(0.5)
         }
     }
     
@@ -118,7 +129,7 @@ final class NoteViewCell: UICollectionViewCell {
         dateModifiedNoteLabel.font = UIFont.systemFont(ofSize: 10)
         
         dateModifiedNoteLabel.snp.makeConstraints { make in
-            make.leading.equalTo(titleNoteLabel)
+            make.leading.equalTo(previewTitleNoteLabel)
             make.bottom.equalToSuperview().inset(8)
             make.width.equalToSuperview().multipliedBy(0.38)
         }
@@ -134,7 +145,7 @@ final class NoteViewCell: UICollectionViewCell {
         dateCreatedNoteLabel.font = UIFont.systemFont(ofSize: 10)
         
         dateCreatedNoteLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(titleNoteLabel)
+            make.trailing.equalTo(previewTitleNoteLabel)
             make.bottom.equalTo(dateModifiedNoteLabel)
             make.width.equalToSuperview().multipliedBy(0.38)
         }
@@ -145,7 +156,7 @@ final class NoteViewCell: UICollectionViewCell {
         separatorView.backgroundColor = .appColor
         
         separatorView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(titleNoteLabel)
+            make.leading.trailing.equalTo(previewTitleNoteLabel)
             make.bottom.equalTo(dateCreatedNoteLabel.snp.top).offset(-5)
             make.height.equalTo(1)
         }
