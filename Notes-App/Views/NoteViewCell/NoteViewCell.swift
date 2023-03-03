@@ -42,7 +42,7 @@ final class NoteViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        layer.borderColor = UIColor.borderNote.cgColor
+        layer.borderColor = UIColor.borderNote?.cgColor
     }
     
     override func layoutSubviews() {
@@ -57,13 +57,13 @@ final class NoteViewCell: UICollectionViewCell {
         previewTextNoteLabel.text = viewModel.textNote
         dateCreatedNoteLabel.text = viewModel.dateCreated
         dateModifiedNoteLabel.text = viewModel.dateModified
-        layer.borderColor = viewModel.isSelect ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
+        layer.borderColor = viewModel.isSelect ? UIColor.borderSelectedNote?.cgColor : UIColor.borderNote?.cgColor
     }
     
     // MARK: - Private methods
     
     private func updateAppearance() {
-        layer.borderColor = isSwiped ? UIColor.borderSelectedNote.cgColor : UIColor.borderNote.cgColor
+        layer.borderColor = isSwiped ? UIColor.borderSelectedNote?.cgColor : UIColor.borderNote?.cgColor
     }
     
     private func updatNumberOfLinesText() {
@@ -93,7 +93,7 @@ final class NoteViewCell: UICollectionViewCell {
         addSubview(previewTitleNoteLabel)
         
         previewTitleNoteLabel.font = .previewTitleNote
-        previewTitleNoteLabel.textColor = .previewTitle
+        previewTitleNoteLabel.textColor = .previewTitleNote
         previewTitleNoteLabel.textAlignment = .left
         
         previewTitleNoteLabel.snp.makeConstraints { make in
@@ -105,7 +105,7 @@ final class NoteViewCell: UICollectionViewCell {
         addSubview(previewTextNoteLabel)
         
         previewTextNoteLabel.font = .previewTextNote
-        previewTextNoteLabel.textColor = .previewText
+        previewTextNoteLabel.textColor = .previewTextNote
         previewTextNoteLabel.textAlignment = .left
         previewTextNoteLabel.numberOfLines = 0
         

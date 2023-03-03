@@ -146,14 +146,14 @@ class EditNoteViewController: UIViewController {
         view.addSubview(titleNoteTextField)
         
         titleNoteTextField.text = viewModel.getTitle()
-        titleNoteTextField.textColor = .white
+        titleNoteTextField.textColor = .titleNote
         titleNoteTextField.tintColor = .appColor
         titleNoteTextField.font = .titleNote
         titleNoteTextField.backgroundColor = .clear
         titleNoteTextField.adjustsFontSizeToFitWidth = true
         titleNoteTextField.minimumFontSize = 0.6
         titleNoteTextField.borderStyle = .none
-        titleNoteTextField.attributedPlaceholder = NSAttributedString(string: "New Note", attributes: [NSAttributedString.Key.foregroundColor: UIColor.previewText])
+        titleNoteTextField.attributedPlaceholder = NSAttributedString(string: "New Note", attributes: [NSAttributedString.Key.foregroundColor: UIColor.previewTextNote])
         titleNoteTextField.enablesReturnKeyAutomatically = true
         titleNoteTextField.keyboardAppearance = .dark
         titleNoteTextField.delegate = self
@@ -169,7 +169,7 @@ class EditNoteViewController: UIViewController {
         view.addSubview(textNoteTextView)
         
         textNoteTextView.text = viewModel.getText()
-        textNoteTextView.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+        textNoteTextView.textColor = .textNote
         textNoteTextView.tintColor = .appColor
         textNoteTextView.font = .textNote
         textNoteTextView.backgroundColor = .clear
@@ -206,7 +206,7 @@ class EditNoteViewController: UIViewController {
         let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
         hideKeyboardButton.setImage(UIImage(systemName: "keyboard.chevron.compact.down", withConfiguration: config), for: .normal)
         hideKeyboardButton.frame = CGRect(x: view.bounds.width - 60, y: view.bounds.height, width: 50, height: 30)
-        hideKeyboardButton.tintColor = .hideKeyboardButtonButton
+        hideKeyboardButton.tintColor = .hideKeyboardButton
         hideKeyboardButton.backgroundColor = .appColor
         hideKeyboardButton.layer.cornerRadius = 10
         hideKeyboardButton.isHidden = true
@@ -271,7 +271,7 @@ private extension EditNoteViewController {
         
         viewModel.showContentPlaceholder = { [weak self] placeholder in
             self?.textNoteTextView.text = placeholder
-            self?.textNoteTextView.textColor = .previewText
+            self?.textNoteTextView.textColor = .previewTextNote
         }
     }
 }
