@@ -15,15 +15,50 @@ class NotesScreenViewController: UIViewController {
     private let headerLabel = UILabel()
     private let createNoteButton = UIButton(type: .system)
     
+    private let startDisplayView = UIView()
+    private let startImageView = UIImageView()
+    private let startLabel = UILabel()
+    
     private let listNotesButton = UIButton(type: .system)
     private let galleryNotesButton = UIButton(type: .system)
     
     private let optionsMenuToolbar = UIToolbar()
-
+    
     lazy private var notesCollection: UICollectionView = {
         let layout = viewModel.noteLayoutType.layout
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
+    }()
+    
+    lazy private var deleteNoteImageView: UIImageView = {
+        let imageView = UIImageView()
+        
+        imageView.image = UIImage(systemName: "trash.fill")
+        imageView.tintColor = .systemRed
+        
+        return imageView
+    }()
+    
+    lazy private var deleteNoteLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Delete"
+        label.textColor = .systemRed
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        
+        return label
+    }()
+    
+    lazy private var deleteNoteStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [deleteNoteImageView, deleteNoteLabel])
+        
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        
+        let deleteTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleDeleteNoteFromToolbar))
+        stackView.addGestureRecognizer(deleteTapGesture)
+        
+        return stackView
     }()
     
     private let viewModel: NotesScreenViewModel
@@ -117,6 +152,9 @@ class NotesScreenViewController: UIViewController {
         setupGalleryNotesButton()
         setupNotesCollection()
         setupCreateNoteButton()
+        setupStartDisplayView()
+        setupStartImageView()
+        setupStartLabel()
         setupOptionsMenuToolbar()
     }
     
@@ -200,6 +238,44 @@ class NotesScreenViewController: UIViewController {
         }
     }
     
+    private func setupStartDisplayView() {
+        view.addSubview(startDisplayView)
+        
+        startDisplayView.backgroundColor = .clear
+        
+        startDisplayView.snp.makeConstraints { make in
+            make.top.equalTo(headerLabel.snp.bottom).offset(20)
+            make.left.trailing.equalToSuperview().inset(20)
+            make.height.equalToSuperview().multipliedBy(0.7)
+        }
+    }
+    
+    private func setupStartImageView() {
+        startDisplayView.addSubview(startImageView)
+        
+        startImageView.image = UIImage(named: "startimage")
+        startImageView.contentMode = .scaleAspectFit
+        
+        startImageView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalToSuperview().multipliedBy(0.7)
+        }
+    }
+    
+    private func setupStartLabel() {
+        startDisplayView.addSubview(startLabel)
+        
+        startLabel.text = viewModel.startHeader
+        startLabel.textColor = .startHeader
+        startLabel.font = UIFont.systemFont(ofSize: 25)
+        startLabel.textAlignment = .center
+        
+        startLabel.snp.makeConstraints { make in
+            make.top.equalTo(startImageView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+        }
+    }
+    
     private func setupOptionsMenuToolbar() {
         view.addSubview(optionsMenuToolbar)
         
@@ -215,39 +291,8 @@ class NotesScreenViewController: UIViewController {
         optionsMenuToolbar.isHidden = true
         
         let flexibleSpaceBarButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let deleteBarButton = UIBarButtonItem(customView: setupDeleteNoteStackView())
+        let deleteBarButton = UIBarButtonItem(customView: deleteNoteStackView)
         optionsMenuToolbar.items = [flexibleSpaceBarButton, deleteBarButton, flexibleSpaceBarButton]
-    }
-    
-    private func setupDeleteNoteStackView() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [setupDeleteNoteImageView(), setupDeleteNoteLabel()])
-        
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        
-        let deleteTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleDeleteNoteFromToolbar))
-        stackView.addGestureRecognizer(deleteTapGesture)
-        
-        return stackView
-    }
-    
-    private func setupDeleteNoteImageView() -> UIImageView {
-        let imageView = UIImageView()
-        
-        imageView.image = UIImage(systemName: "trash.fill")
-        imageView.tintColor = .systemRed
-        
-        return imageView
-    }
-    
-    private func setupDeleteNoteLabel() -> UILabel {
-        let label = UILabel()
-        
-        label.text = "Delete"
-        label.textColor = .systemRed
-        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        
-        return label
     }
     
     private func setupBackBarButtonItem() {
@@ -324,6 +369,18 @@ private extension NotesScreenViewController {
         viewModel.hideToolbar = { [weak self] in
             self?.optionsMenuToolbar.isHidden = true
             self?.createNoteButton.isHidden = false
+        }
+        
+        viewModel.showStartDisplay = { [weak self] in
+            self?.startDisplayView.isHidden = false
+            self?.galleryNotesButton.isHidden = true
+            self?.listNotesButton.isHidden = true
+        }
+        
+        viewModel.hideStartDisplay = { [weak self] in
+            self?.startDisplayView.isHidden = true
+            self?.galleryNotesButton.isHidden = false
+            self?.listNotesButton.isHidden = false
         }
         
         viewModel.didUpdateNoteLayout = { [weak self] noteLayout in

@@ -135,6 +135,7 @@ class EditNoteViewController: UIViewController {
         setupTextNoteTextView()
         setupContentBorderView()
         setupHideKeyboardButton()
+        setupNotificationCenter()
     }
     
     private func setupSuperView() {
@@ -178,9 +179,6 @@ class EditNoteViewController: UIViewController {
         textNoteTextView.keyboardDismissMode = .onDrag
         textNoteTextView.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
         textNoteTextView.snp.makeConstraints { make in
             make.top.equalTo(titleNoteTextField.snp.bottom).offset(5)
             make.leading.trailing.equalToSuperview().inset(15)
@@ -213,6 +211,11 @@ class EditNoteViewController: UIViewController {
         hideKeyboardButton.layer.cornerRadius = 10
         hideKeyboardButton.isHidden = true
         hideKeyboardButton.addTarget(self, action: #selector(handleHideKeyboardButton), for: .touchUpInside)
+    }
+    
+    private func setupNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 

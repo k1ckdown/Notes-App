@@ -23,6 +23,9 @@ final class NotesScreenViewModel {
     var hideToolbar: (() -> Void)?
     var showToolBar: (() -> Void)?
     
+    var showStartDisplay: (() -> Void)?
+    var hideStartDisplay: (() -> Void)?
+    
     var showReceivedError: ((String) -> Void)?
     var showDeleteNoteAlert: ((String, String) -> Void)?
     
@@ -35,6 +38,7 @@ final class NotesScreenViewModel {
     
     private(set) var indexPathSelectedNote: IndexPath?
     private(set) var noteLayoutType = NoteLayoutType.gallery
+    private(set) var startHeader = "Create your first note !"
     
     private var notes: [Note] = [] {
         didSet {
@@ -65,8 +69,15 @@ final class NotesScreenViewModel {
     
     func updateHeader() {
         let numberOfNotes = notes.count
-        let headerText = "\(numberOfNotes) \(numberOfNotes == 1 ? "Note" : "Notes")"
-        didUpdateHeader?(headerText)
+        
+        if numberOfNotes == 0 {
+            didUpdateHeader?("Notes")
+            showStartDisplay?()
+        } else {
+            let headerText = "\(numberOfNotes) \(numberOfNotes == 1 ? "Note" : "Notes")"
+            didUpdateHeader?(headerText)
+            hideStartDisplay?()
+        }
     }
     
     func createNote() {
