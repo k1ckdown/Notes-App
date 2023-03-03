@@ -147,7 +147,7 @@ class EditNoteViewController: UIViewController {
         titleNoteTextField.text = viewModel.getTitle()
         titleNoteTextField.textColor = .white
         titleNoteTextField.tintColor = .appColor
-        titleNoteTextField.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
+        titleNoteTextField.font = .titleNote
         titleNoteTextField.backgroundColor = .clear
         titleNoteTextField.adjustsFontSizeToFitWidth = true
         titleNoteTextField.minimumFontSize = 0.6
@@ -160,7 +160,7 @@ class EditNoteViewController: UIViewController {
         titleNoteTextField.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(100)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(50)
+            make.height.equalTo(40)
         }
     }
     
@@ -168,8 +168,9 @@ class EditNoteViewController: UIViewController {
         view.addSubview(textNoteTextView)
         
         textNoteTextView.text = viewModel.getText()
+        textNoteTextView.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         textNoteTextView.tintColor = .appColor
-        textNoteTextView.font = UIFont.systemFont(ofSize: 18)
+        textNoteTextView.font = .textNote
         textNoteTextView.backgroundColor = .clear
         textNoteTextView.enablesReturnKeyAutomatically = true
         textNoteTextView.keyboardAppearance = .dark
@@ -181,7 +182,7 @@ class EditNoteViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         textNoteTextView.snp.makeConstraints { make in
-            make.top.equalTo(titleNoteTextField.snp.bottom).offset(13)
+            make.top.equalTo(titleNoteTextField.snp.bottom).offset(5)
             make.leading.trailing.equalToSuperview().inset(15)
             make.bottom.equalToSuperview()
         }        
@@ -194,8 +195,9 @@ class EditNoteViewController: UIViewController {
         contentBorderView.layer.cornerRadius = 5
         
         contentBorderView.snp.makeConstraints { make in
-            make.top.leading.equalTo(textNoteTextView)
-            make.height.equalTo(130)
+            make.top.equalTo(titleNoteTextField.snp.bottom).offset(10)
+            make.leading.equalTo(textNoteTextView)
+            make.height.equalTo(110)
             make.width.equalTo(4)
         }
     }

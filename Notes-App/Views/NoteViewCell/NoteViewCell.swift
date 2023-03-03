@@ -92,22 +92,21 @@ final class NoteViewCell: UICollectionViewCell {
     private func setupPreviewTitleNoteLabel() {
         addSubview(previewTitleNoteLabel)
         
-        previewTitleNoteLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
+        previewTitleNoteLabel.font = .previewTitleNote
         previewTitleNoteLabel.textColor = .previewTitle
         previewTitleNoteLabel.textAlignment = .left
         
         previewTitleNoteLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview().inset(15)
+            make.top.leading.trailing.equalToSuperview().inset(13)
         }
     }
     
     private func setupPreviewTextNoteLabel() {
         addSubview(previewTextNoteLabel)
         
+        previewTextNoteLabel.font = .previewTextNote
         previewTextNoteLabel.textColor = .previewText
         previewTextNoteLabel.textAlignment = .left
-        previewTextNoteLabel.font = UIFont.systemFont(ofSize: 16)
-        previewTextNoteLabel.sizeToFit()
         previewTextNoteLabel.numberOfLines = 0
         
         previewTextNoteLabel.frame.size.height = frame.height / 2
