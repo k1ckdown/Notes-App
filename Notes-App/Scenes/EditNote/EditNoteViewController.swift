@@ -266,7 +266,7 @@ private extension EditNoteViewController {
         
         viewModel.hideContentPlaceholder = { [weak self] in
             self?.textNoteTextView.text = ""
-            self?.textNoteTextView.textColor = .white
+            self?.textNoteTextView.textColor = .textNote
         }
         
         viewModel.showContentPlaceholder = { [weak self] placeholder in
